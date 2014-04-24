@@ -21,20 +21,26 @@
  */
 
 #include <SD.h>
-
+#include "max6675.h"
 // On the Ethernet Shield, CS is pin 4. Note that even if it's not
 // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
 // 53 on the Mega) must be left as an output or the SD library
 // functions will not work.
 const int chipSelect = 4;
 
+int pin = 20; //Start pin für cs 
+int thermoDO = 19;
+int thermoCLK = 18;
+int Zylinder[8];
+
 void setup()
 {
  // Open serial communications and wait for port to open:
   Serial.begin(9600);
-   while (!Serial) {
-    ; // wait for serial port to connect. Needed for Leonardo only
-  }
+  
+    Serial.println("MAX6675 test");
+  // wait for MAX chip to stabilize
+  delay(500);
 
 
   Serial.print("Initializing SD card...");
@@ -53,14 +59,33 @@ void setup()
 
 void loop()
 {
+  
+   // basic readout test, just print the current temp
+   for (int thermoCS=0; thermoCS <= 7; thermoCS++){
+  MAX6675 thermocouple(thermoCLK, thermoCS+pin, thermoDO);
+  Zylinder[thermoCS] = thermocouple.readCelsius();
+   Serial.print("Zylinder ");
+   Serial.print(thermoCS+1);
+   Serial.print("C = "); 
+   Serial.println(Zylinder[thermoCS]);
+  }
+  
+  
+  
+  
+  
   // make a string for assembling the data to log:
   String dataString = "";
 
   // read three sensors and append to the string:
-  for (int analogPin = 0; analogPin < 3; analogPin++) {
-    int sensor = analogRead(analogPin);
+  
+  dataString += String(millis());
+  dataString += ",";
+  
+  for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
+    int sensor = Zylinder[thermoCS];
     dataString += String(sensor);
-    if (analogPin < 2) {
+    if (thermoCS < 7) {
       dataString += ","; 
     }
   }
