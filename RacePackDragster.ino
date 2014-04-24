@@ -28,10 +28,15 @@
 // functions will not work.
 const int chipSelect = 4;
 
-int pin = 20; //Start pin für cs 
-int thermoDO = 19;
-int thermoCLK = 18;
+int pin = 30; //Start pin für cs 
+int thermoDO = 29;
+int thermoCLK = 28;
 int Zylinder[8];
+int Zuendung = 0 ;
+int tor = 100;
+int umdrehungen = 0;
+unsigned long Timer1;
+unsigned long Timer2;
 
 void setup()
 {
@@ -55,11 +60,14 @@ void setup()
     return;
   }
   Serial.println("card initialized.");
+ attachInterrupt(0, zuendung, RISING);
+Timer1 = millis();
 }
 
 void loop()
 {
-  
+ 
+
    // basic readout test, just print the current temp
    for (int thermoCS=0; thermoCS <= 7; thermoCS++){
   MAX6675 thermocouple(thermoCLK, thermoCS+pin, thermoDO);
@@ -81,7 +89,8 @@ void loop()
   
   dataString += String(millis());
   dataString += ",";
-  
+  dataString += String(umdrehungen);
+  dataString += ",";
   for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
     int sensor = Zylinder[thermoCS];
     dataString += String(sensor);
@@ -108,7 +117,16 @@ void loop()
 }
 
 
+void zuendung(){       
+Zuendung++;
+Timer2 =millis();
 
+if (Timer2-Timer1 >= 100 ){
+  umdrehungen = Zuendung * 150 ;
+  Zuendung = 0;
+  Timer1 = millis();
+  }
+}  
 
 
 
