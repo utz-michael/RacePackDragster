@@ -32,11 +32,12 @@ int pin = 30; //Start pin für cs
 int thermoDO = 29;
 int thermoCLK = 28;
 int Zylinder[8];
-int Zuendung = 0 ;
-int tor = 100;
+
+
 int umdrehungen = 0;
-unsigned long Timer1;
-unsigned long Timer2;
+unsigned long last=0;
+unsigned long zeit=150000000;
+int counter = 0;
 
 void setup()
 {
@@ -61,7 +62,6 @@ void setup()
   }
   Serial.println("card initialized.");
  attachInterrupt(0, zuendung, RISING);
-Timer1 = millis();
 }
 
 void loop()
@@ -78,7 +78,13 @@ void loop()
    Serial.println(Zylinder[thermoCS]);
   }
   
-  
+  if (counter >= 10) {
+  zeit = zeit / counter;
+  umdrehungen = 150/(zeit/1000000);
+  counter =0 ;
+  }
+  Serial.print("U/min ");
+  Serial.println(umdrehungen);
   
   
   
@@ -117,19 +123,14 @@ void loop()
 }
 
 
-void zuendung(){       
-Zuendung++;
-Timer2 =millis();
-
-if (Timer2-Timer1 >= 100 ){
-  umdrehungen = Zuendung * 150 ;
-  Zuendung = 0;
-  Timer1 = millis();
-  }
-}  
-
-
-
-
-
+void zuendung(){ 
+      detachInterrupt(0);                         // Interrupt ausschalten damit er uns nicht beißt
+      unsigned long m = micros();                 // Microsekundenzähler auslesen
+      unsigned long v = m - last;                 // Differenz zum letzten Durchlauf berechnen
+      zeit = zeit + v;
+      counter++;
+      last = m;       // und wieder den letzten Wert merken
+      attachInterrupt(0, zuendung, RISING );    // Interrupt wieder einschalten.
+   }
+  
 
