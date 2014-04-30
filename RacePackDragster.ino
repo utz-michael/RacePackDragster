@@ -118,7 +118,7 @@ void loop()
   // make a string for assembling the data to log:
   String dataString = "";
 
-  // read three sensors and append to the string:
+  // read  sensors and append to the string:
   
   dataString += String(millis()); // Zeitstempel für Messung eventuell auf microsekunden umstellen
   dataString += ",";
@@ -160,7 +160,7 @@ void Motor(){
       detachInterrupt(0);                         // Interrupt ausschalten damit er uns nicht beißt
       unsigned long m = micros();                 // Microsekundenzähler auslesen
       unsigned long v = m - last;                 // Differenz zum letzten Durchlauf berechnen
-      zeit = v;
+      zeit = zeit + v;  //für glättung ansonsten zeit = v;
       counter++;
       last = m;       // und wieder den letzten Wert merken
       attachInterrupt(0, Motor, RISING );    // Interrupt wieder einschalten.
@@ -170,7 +170,7 @@ void Kardanwelle(){
       detachInterrupt(1);                         // Interrupt ausschalten damit er uns nicht beißt
       unsigned long m2 = micros();                 // Microsekundenzähler auslesen
       unsigned long v2 = m2 - last2;                 // Differenz zum letzten Durchlauf berechnen
-      zeit2 = v2;
+      zeit2 = zeit2 + v2; //für glättung ansonsten zeit2 = v;
       counter2++;
       last2 = m2;       // und wieder den letzten Wert merken
       attachInterrupt(0, Kardanwelle, RISING );    // Interrupt wieder einschalten.
