@@ -35,11 +35,18 @@ int thermoDO = 29;
 int thermoCLK = 28;
 int Zylinder[8];
 
-
+// Umdrehung Motor
 int umdrehungen = 0;
 unsigned long last=0;
 unsigned long zeit=60000000UL;
 int counter = 0;
+
+// Umdrehung Kardanwelle
+int umdrehungen2 = 0;
+unsigned long last2=0;
+unsigned long zeit2=60000000UL;
+int counter2 = 0;
+
 
 void setup()
 {
@@ -70,6 +77,7 @@ void setup()
   Serial.println("card initialized.");
 #endif  
  attachInterrupt(0, zuendung, RISING);
+ attachInterrupt(1, KardanWelle, RISING);
 }
 
 void loop()
@@ -88,14 +96,22 @@ void loop()
 #endif   
   }
   
-  if (counter >= 10) {   // umdrehungen berechenen auf basis 1 impuls pro umdrehung und glättung mit 10 messungen
+  if (counter >= 10) {   // Motor umdrehungen berechenen auf basis 1 impuls pro umdrehung und glättung mit 10 messungen
   zeit = zeit / counter;
   umdrehungen = 60000000UL/zeit;
   counter =0 ;
   }
+  
+   if (counter >= 10) {   // KardanWelle umdrehungen berechenen auf basis 1 impuls pro umdrehung und glättung mit 10 messungen
+  zeit2 = zeit2 / counter2;
+  umdrehungen2 = 60000000UL/zeit;
+  counter2 =0 ;
+  }
 #ifdef DEBUG  
-  Serial.print("U/min ");
+  Serial.print("Motor U/min ");
   Serial.println(umdrehungen);
+   Serial.print("KardanWelle U/min ");
+  Serial.println(umdrehungen2);
 #endif  
   
   
@@ -108,10 +124,12 @@ void loop()
   dataString += ",";
   dataString += String(umdrehungen);
   dataString += ",";
-  for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
+  dataString += String(umdrehungen2);
+  dataString += ",";
+  for (int thermoCS = 0; thermoCS <= 8; thermoCS++) {
     int sensor = Zylinder[thermoCS];
     dataString += String(sensor);
-    if (thermoCS < 7) {
+    if (thermoCS < 8) {
       dataString += ","; 
     }
   }
@@ -148,4 +166,13 @@ void zuendung(){
       attachInterrupt(0, zuendung, RISING );    // Interrupt wieder einschalten.
    }
   
+void KardanWelle(){ 
+      detachInterrupt(1);                         // Interrupt ausschalten damit er uns nicht beißt
+      unsigned long m2 = micros();                 // Microsekundenzähler auslesen
+      unsigned long v2 = m2 - last2;                 // Differenz zum letzten Durchlauf berechnen
+      zeit2 = zeit2 + v2;
+      counter2++;
+      last2 = m2;       // und wieder den letzten Wert merken
+      attachInterrupt(0, KardanWelle, RISING );    // Interrupt wieder einschalten.
+   }  
 
