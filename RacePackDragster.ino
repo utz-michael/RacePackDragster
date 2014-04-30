@@ -49,14 +49,19 @@ int counter2 = 0;
 
 // Beschleunigungssensor
 #ifdef BESCHLEUNIGUNG
+float BeschleunigungsKonstante = 0.0602;
 int analogPinX = 0;
 int analogPinY = 1;
 int analogPinZ = 2;
+int kalibrierungX = 0;
+int kalibrierungY = 0;
+int kalibrierungZ = 0;
+int i=0;
 #endif
 
-int X = 0;
-int Y = 0;
-int Z = 0;
+float X = 0;
+float Y = 0;
+float Z = 0;
 
 void setup()
 {
@@ -86,6 +91,34 @@ void setup()
 #ifdef DEBUG  
   Serial.println("card initialized.");
 #endif  
+
+#ifdef BESCHLEUNIGUNG // Kallibrierung Beschleunigungssensor
+delay (1000);
+for ( i=0; i <= 255; i++){
+kalibrierungX = kalibrierungX + analogRead(analogPinX);
+kalibrierungY = kalibrierungY + analogRead(analogPinY);
+kalibrierungZ = kalibrierungZ + analogRead(analogPinZ);
+}
+kalibrierungX = kalibrierungX / i;
+kalibrierungY = kalibrierungY / i;
+kalibrierungZ = kalibrierungZ / i;
+
+#endif
+
+#ifdef DEBUG
+
+  Serial.print("Kalibrierung X: ");
+  Serial.println(kalibrierungX);
+  Serial.print("Kalibrierung Y: ");
+  Serial.println(kalibrierungY);
+  Serial.print("Kalibrierung Z: ");
+  Serial.println(kalibrierungZ);
+delay (5000);
+
+#endif
+
+
+
  attachInterrupt(0, Motor, RISING);
  attachInterrupt(1, Kardanwelle, RISING);
 }
@@ -125,9 +158,9 @@ void loop()
 #endif  
 
 #ifdef BESCHLEUNIGUNG
-X = analogRead(analogPinX);
-Y = analogRead(analogPinY);
-Z = analogRead(analogPinZ);
+X = (analogRead(analogPinX)-kalibrierungX)*BeschleunigungsKonstante;
+Y = (analogRead(analogPinY)-kalibrierungY)*BeschleunigungsKonstante;
+Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
 #endif
 
 #ifdef DEBUG  
