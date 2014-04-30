@@ -23,7 +23,7 @@
 #include <SD.h>
 #include "max6675.h"
 #define DEBUG   //Debug einschalten
-
+#define BESCHLEUNIGUNG
 // On the Ethernet Shield, CS is pin 4. Note that even if it's not
 // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
 // 53 on the Mega) must be left as an output or the SD library
@@ -47,6 +47,16 @@ unsigned long last2=0;
 unsigned long zeit2=60000000UL;
 int counter2 = 0;
 
+// Beschleunigungssensor
+#ifdef BESCHLEUNIGUNG
+int analogPinX = 0;
+int analogPinY = 1;
+int analogPinZ = 2;
+#endif
+
+int X = 0;
+int Y = 0;
+int Z = 0;
 
 void setup()
 {
@@ -113,6 +123,24 @@ void loop()
    Serial.print("Kardanwelle U/min ");
   Serial.println(Kardanwellenrehzahl);
 #endif  
+
+#ifdef BESCHLEUNIGUNG
+X = analogRead(analogPinX);
+Y = analogRead(analogPinY);
+Z = analogRead(analogPinZ);
+#endif
+
+#ifdef DEBUG  
+  Serial.print("X: ");
+  Serial.println(X);
+  Serial.print("Y: ");
+  Serial.println(Y);
+  Serial.print("Z: ");
+  Serial.println(Z);
+#endif
+
+
+
   
   
   // make a string for assembling the data to log:
@@ -125,6 +153,12 @@ void loop()
   dataString += String(Motordrehzahl); // Motorumdrehung
   dataString += ",";
   dataString += String(Kardanwellenrehzahl); // Kardanwellenrehzahl
+  dataString += ",";
+  dataString += String(X); // Beschleunigung X
+  dataString += ",";
+  dataString += String(Y); // Beschleunigung X
+  dataString += ",";
+  dataString += String(Z); // Beschleunigung X
   dataString += ",";
   for (int thermoCS = 0; thermoCS <= 8; thermoCS++) {
     int sensor = Zylinder[thermoCS];
