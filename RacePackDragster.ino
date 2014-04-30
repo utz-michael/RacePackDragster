@@ -29,20 +29,20 @@
 // 53 on the Mega) must be left as an output or the SD library
 // functions will not work.
 const int chipSelect = 4;
-
+// Thermoelement 
 int pin = 30; //Start pin für cs 
 int thermoDO = 29;
 int thermoCLK = 28;
 int Zylinder[8];
 
 // Umdrehung Motor
-int umdrehungen = 0;
+int Motordrehzahl = 0;
 unsigned long last=0;
 unsigned long zeit=60000000UL;
 int counter = 0;
 
 // Umdrehung Kardanwelle
-int umdrehungen2 = 0;
+int Kardanwellenrehzahl = 0;
 unsigned long last2=0;
 unsigned long zeit2=60000000UL;
 int counter2 = 0;
@@ -76,8 +76,8 @@ void setup()
 #ifdef DEBUG  
   Serial.println("card initialized.");
 #endif  
- attachInterrupt(0, zuendung, RISING);
- attachInterrupt(1, KardanWelle, RISING);
+ attachInterrupt(0, Motor, RISING);
+ attachInterrupt(1, Kardanwelle, RISING);
 }
 
 void loop()
@@ -96,22 +96,22 @@ void loop()
 #endif   
   }
   
-  if (counter >= 10) {   // Motor umdrehungen berechenen auf basis 1 impuls pro umdrehung und glättung mit 10 messungen
+  if (counter >= 10) {   // Motor Motordrehzahl berechenen auf basis 1 impuls pro umdrehung und glättung mit 10 messungen
   zeit = zeit / counter;
-  umdrehungen = 60000000UL/zeit;
+  Motordrehzahl = 60000000UL/zeit;
   counter =0 ;
   }
   
-   if (counter >= 10) {   // KardanWelle umdrehungen berechenen auf basis 1 impuls pro umdrehung und glättung mit 10 messungen
+   if (counter2 >= 10) {   // Kardanwelle Motordrehzahl berechenen auf basis 1 impuls pro umdrehung und glättung mit 10 messungen
   zeit2 = zeit2 / counter2;
-  umdrehungen2 = 60000000UL/zeit;
+  Kardanwellenrehzahl = 60000000UL/zeit;
   counter2 =0 ;
   }
 #ifdef DEBUG  
   Serial.print("Motor U/min ");
-  Serial.println(umdrehungen);
-   Serial.print("KardanWelle U/min ");
-  Serial.println(umdrehungen2);
+  Serial.println(Motordrehzahl);
+   Serial.print("Kardanwelle U/min ");
+  Serial.println(Kardanwellenrehzahl);
 #endif  
   
   
@@ -120,11 +120,11 @@ void loop()
 
   // read three sensors and append to the string:
   
-  dataString += String(millis());
+  dataString += String(millis()); // Zeitstempel für Messung eventuell auf microsekunden umstellen
   dataString += ",";
-  dataString += String(umdrehungen);
+  dataString += String(Motordrehzahl); // Motorumdrehung
   dataString += ",";
-  dataString += String(umdrehungen2);
+  dataString += String(Kardanwellenrehzahl); // Kardanwellenrehzahl
   dataString += ",";
   for (int thermoCS = 0; thermoCS <= 8; thermoCS++) {
     int sensor = Zylinder[thermoCS];
@@ -156,23 +156,23 @@ void loop()
 }
 
 
-void zuendung(){ 
+void Motor(){ 
       detachInterrupt(0);                         // Interrupt ausschalten damit er uns nicht beißt
       unsigned long m = micros();                 // Microsekundenzähler auslesen
       unsigned long v = m - last;                 // Differenz zum letzten Durchlauf berechnen
-      zeit = zeit + v;
+      zeit = v;
       counter++;
       last = m;       // und wieder den letzten Wert merken
-      attachInterrupt(0, zuendung, RISING );    // Interrupt wieder einschalten.
+      attachInterrupt(0, Motor, RISING );    // Interrupt wieder einschalten.
    }
   
-void KardanWelle(){ 
+void Kardanwelle(){ 
       detachInterrupt(1);                         // Interrupt ausschalten damit er uns nicht beißt
       unsigned long m2 = micros();                 // Microsekundenzähler auslesen
       unsigned long v2 = m2 - last2;                 // Differenz zum letzten Durchlauf berechnen
-      zeit2 = zeit2 + v2;
+      zeit2 = v2;
       counter2++;
       last2 = m2;       // und wieder den letzten Wert merken
-      attachInterrupt(0, KardanWelle, RISING );    // Interrupt wieder einschalten.
+      attachInterrupt(0, Kardanwelle, RISING );    // Interrupt wieder einschalten.
    }  
 
