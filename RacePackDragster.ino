@@ -22,6 +22,8 @@
 
 #include <SD.h>
 #include "max6675.h"
+#define DEBUG   //Debug einschalten
+
 // On the Ethernet Shield, CS is pin 4. Note that even if it's not
 // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
 // 53 on the Mega) must be left as an output or the SD library
@@ -36,31 +38,37 @@ int Zylinder[8];
 
 int umdrehungen = 0;
 unsigned long last=0;
-unsigned long zeit=150000000;
+unsigned long zeit=60000000UL;
 int counter = 0;
 
 void setup()
 {
  // Open serial communications and wait for port to open:
   Serial.begin(9600);
-  
+#ifdef DEBUG
     Serial.println("MAX6675 test");
+#endif
   // wait for MAX chip to stabilize
   delay(500);
 
-
+#ifdef DEBUG
   Serial.print("Initializing SD card...");
+#endif  
   // make sure that the default chip select pin is set to
   // output, even if you don't use it:
   pinMode(10, OUTPUT);
   
   // see if the card is present and can be initialized:
   if (!SD.begin(chipSelect)) {
+#ifdef DEBUG    
     Serial.println("Card failed, or not present");
+#endif    
     // don't do anything more:
     return;
   }
+#ifdef DEBUG  
   Serial.println("card initialized.");
+#endif  
  attachInterrupt(0, zuendung, RISING);
 }
 
@@ -72,20 +80,23 @@ void loop()
    for (int thermoCS=0; thermoCS <= 7; thermoCS++){
   MAX6675 thermocouple(thermoCLK, thermoCS+pin, thermoDO);
   Zylinder[thermoCS] = thermocouple.readCelsius();
+#ifdef DEBUG  
    Serial.print("Zylinder ");
    Serial.print(thermoCS+1);
    Serial.print("C = "); 
    Serial.println(Zylinder[thermoCS]);
+#endif   
   }
   
-  if (counter >= 10) {
+  if (counter >= 10) {   // umdrehungen berechenen auf basis 1 impuls pro umdrehung und glättung mit 10 messungen
   zeit = zeit / counter;
-  umdrehungen = 150/(zeit/1000000);
+  umdrehungen = 60000000UL/zeit;
   counter =0 ;
   }
+#ifdef DEBUG  
   Serial.print("U/min ");
   Serial.println(umdrehungen);
-  
+#endif  
   
   
   // make a string for assembling the data to log:
@@ -114,11 +125,15 @@ void loop()
     dataFile.println(dataString);
     dataFile.close();
     // print to the serial port too:
+#ifdef DEBUG    
     Serial.println(dataString);
+#endif    
   }  
   // if the file isn't open, pop up an error:
   else {
+#ifdef DEBUG    
     Serial.println("error opening datalog.txt");
+#endif    
   } 
 }
 
