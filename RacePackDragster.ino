@@ -22,7 +22,7 @@
 
 #include <SD.h>
 #include "max6675.h"
-//#define DEBUG   //Debug einschalten
+#define DEBUG   //Debug einschalten
 #define BESCHLEUNIGUNG
 //#define Temperatur
 // On the Ethernet Shield, CS is pin 4. Note that even if it's not
