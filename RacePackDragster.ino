@@ -24,6 +24,7 @@
 #include "max6675.h"
 //#define DEBUG   //Debug einschalten
 #define BESCHLEUNIGUNG
+//#define Temperatur
 // On the Ethernet Shield, CS is pin 4. Note that even if it's not
 // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
 // 53 on the Mega) must be left as an output or the SD library
@@ -134,6 +135,7 @@ delay (5000);
 void loop()
 {
  
+#ifdef Temperatur
 
    // basic readout test, just print the current temp
    for (int thermoCS=0; thermoCS <= 7; thermoCS++){
@@ -146,7 +148,7 @@ void loop()
    Serial.println(Zylinder[thermoCS]);
 #endif   
   }
-  
+#endif  
   if (counter >= 10) {   // Motor Motordrehzahl berechenen auf basis 1 impuls pro umdrehung und glättung mit 10 messungen
   zeit = zeit / counter;
   Motordrehzahl = 60000000UL/zeit;
@@ -216,7 +218,7 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
  // File dataFile = SD.open("datalog.csv", FILE_WRITE);
 File dataFile = SD.open("datalog.csv",  O_CREAT | O_WRITE);
   // if the file is available, write to it:
-  //if (dataFile) {
+  if (dataFile) {
     dataFile.println(dataString);
     dataFile.close();
     
@@ -226,13 +228,13 @@ File dataFile = SD.open("datalog.csv",  O_CREAT | O_WRITE);
     Serial.println(dataString);
 #endif    
  
-//}  
+}  
   // if the file isn't open, pop up an error:
-//  else {
+  else {
 #ifdef DEBUG    
     Serial.println("error opening datalog.csv");
 #endif    
- // } 
+  } 
   
 }
 
