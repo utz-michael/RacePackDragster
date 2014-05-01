@@ -22,7 +22,7 @@
 
 #include <SD.h>
 #include "max6675.h"
-#define DEBUG   //Debug einschalten
+//#define DEBUG   //Debug einschalten
 #define BESCHLEUNIGUNG
 // On the Ethernet Shield, CS is pin 4. Note that even if it's not
 // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
@@ -59,6 +59,7 @@ int kalibrierungZ = 0;
 int i=0;
 #endif
 
+
 float X = 0;
 float Y = 0;
 float Z = 0;
@@ -78,8 +79,15 @@ void setup()
 #endif  
   // make sure that the default chip select pin is set to
   // output, even if you don't use it:
-  pinMode(10, OUTPUT);
-  pinMode(53, OUTPUT);
+pinMode(53, OUTPUT);                       // set the SS pin as an output (necessary!)
+pinMode(4, OUTPUT);                  // SD select pin
+pinMode(10, OUTPUT);                  // Ethernet select pin
+digitalWrite(53, LOW);                    // ? (not sure)
+digitalWrite(4, LOW);               // Explicitly enable SD
+digitalWrite(10, HIGH);// Explicitly disable Ethernet
+
+  
+
   // see if the card is present and can be initialized:
   if (!SD.begin(chipSelect)) {
 #ifdef DEBUG    
@@ -158,9 +166,11 @@ void loop()
 #endif  
 
 #ifdef BESCHLEUNIGUNG
+
 X = (analogRead(analogPinX)-kalibrierungX)*BeschleunigungsKonstante;
 Y = (analogRead(analogPinY)-kalibrierungY)*BeschleunigungsKonstante;
 Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
+
 #endif
 
 #ifdef DEBUG  
@@ -182,44 +192,48 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
   // read  sensors and append to the string:
   
   dataString += String(millis()); // Zeitstempel für Messung eventuell auf microsekunden umstellen
-  dataString += ",";
+  dataString += ";";
   dataString += String(Motordrehzahl); // Motorumdrehung
-  dataString += ",";
+  dataString += ";";
   dataString += String(Kardanwellenrehzahl); // Kardanwellenrehzahl
-  dataString += ",";
+  dataString += ";";
   dataString += String(X); // Beschleunigung X
-  dataString += ",";
+  dataString += ";";
   dataString += String(Y); // Beschleunigung X
-  dataString += ",";
+  dataString += ";";
   dataString += String(Z); // Beschleunigung X
-  dataString += ",";
-  for (int thermoCS = 0; thermoCS <= 8; thermoCS++) {
+  dataString += ";";
+  for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
     int sensor = Zylinder[thermoCS];
     dataString += String(sensor);
-    if (thermoCS < 8) {
-      dataString += ","; 
+    if (thermoCS < 7) {
+      dataString += ";"; 
     }
   }
 
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
-  File dataFile = SD.open("datalog.txt", FILE_WRITE);
-
+ // File dataFile = SD.open("datalog.csv", FILE_WRITE);
+File dataFile = SD.open("datalog.csv",  O_CREAT | O_WRITE);
   // if the file is available, write to it:
-  if (dataFile) {
+  //if (dataFile) {
     dataFile.println(dataString);
     dataFile.close();
+    
+   
     // print to the serial port too:
 #ifdef DEBUG    
     Serial.println(dataString);
 #endif    
-  }  
+ 
+//}  
   // if the file isn't open, pop up an error:
-  else {
+//  else {
 #ifdef DEBUG    
-    Serial.println("error opening datalog.txt");
+    Serial.println("error opening datalog.csv");
 #endif    
-  } 
+ // } 
+  
 }
 
 
