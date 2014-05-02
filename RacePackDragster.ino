@@ -33,8 +33,9 @@
 SdFat sd;
 
 // File for logging data.
-SdFile myFile;
-
+SdFile file;
+// store error strings in flash to save RAM
+#define error(s) sd.errorHalt_P(PSTR(s))
 // On the Ethernet Shield, CS is pin 4. Note that even if it's not
 // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
 // 53 on the Mega) must be left as an output or the SD library
@@ -96,22 +97,23 @@ void setup()
 #endif  
   // make sure that the default chip select pin is set to
   // output, even if you don't use it:
-//pinMode(53, OUTPUT);                       // set the SS pin as an output (necessary!)
-//pinMode(4, OUTPUT);                  // SD select pin
+pinMode(53, OUTPUT);                       // set the SS pin as an output (necessary!)
+pinMode(4, OUTPUT);                  // SD select pin
 pinMode(10, OUTPUT);                  // Ethernet select pin
 digitalWrite(53, LOW);                    // ? (not sure)
-//digitalWrite(4, LOW);               // Explicitly enable SD
+digitalWrite(4, LOW);               // Explicitly enable SD
 digitalWrite(10, HIGH);// Explicitly disable Ethernet
 
   
 
- 
+  // see if the card is present and can be initialized:
+  if (!SD.begin(chipSelect)) {
 #ifdef DEBUG    
     Serial.println("Card failed, or not present");
 #endif    
     // don't do anything more:
     //return;
-  
+  }
 #ifdef DEBUG  
   Serial.println("card initialized.");
 #endif  
@@ -147,23 +149,12 @@ delay (5000);
 
 
 String dataString = "Zeit;Motordrehzahl;Kardanwelle;Beschleunigung;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
-
- // Initialize SdFat or print a detailed error message and halt
-  // Use half speed like the native library.
-  // change to SPI_FULL_SPEED for more performance.
-  if (!sd.begin(chipSelect, SPI_HALF_SPEED)) sd.initErrorHalt();
-
-  // open the file for write at end like the Native SD library
-  if (!myFile.open("test.txt", O_RDWR | O_CREAT | O_AT_END)) {
-    sd.errorHalt("opening test.txt for write failed");
-  }
-
-
-
-
-    myFile.println(dataString);
-    myFile.close();
-    
+File dataFile = file.open("datalog.csv",  O_CREAT | O_WRITE);
+  // if the file is available, write to it:
+  if (dataFile) {
+    dataFile.println(dataString);
+    dataFile.close();
+    }
 
 ZeitOffset = millis(); // offset des timers festlegen
  attachInterrupt(0, Motor, RISING);
@@ -277,12 +268,11 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
  // File dataFile = SD.open("datalog.csv", FILE_WRITE);
- if (!myFile.open("test.txt", O_RDWR | O_CREAT | O_AT_END)) {
-    sd.errorHalt("opening test.txt for write failed");
-  }
-  
-    myFile.println(dataString);
-    myFile.close();
+File dataFile = file.open("datalog.csv",  O_CREAT | O_WRITE);
+  // if the file is available, write to it:
+  if (dataFile) {
+    dataFile.println(dataString);
+    dataFile.close();
     
    
     // print to the serial port too:
@@ -290,13 +280,13 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
     Serial.println(dataString);
 #endif    
  
-  
+}  
   // if the file isn't open, pop up an error:
-
+  else {
 #ifdef DEBUG    
     Serial.println("error opening datalog.csv");
 #endif    
-
+  } 
   
 }
 
