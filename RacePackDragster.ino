@@ -22,7 +22,7 @@
 
 #include <SD.h>
 #include "max6675.h"
-define DEBUG   //Debug einschalten verlangsammt 110ms
+//#define DEBUG   //Debug einschalten verlangsammt 110ms
 
 #define Temperatur
 
@@ -135,9 +135,18 @@ kalibrierungZ = kalibrierungZ / i;
 delay (5000);
 
 #endif
+// Überschrift schreiben
 
 
-ZeitOffset = millis();
+String dataString = "Zeit;Motordrehzahl;Kardanwelle;Beschleunigung;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+File dataFile = SD.open("datalog.csv",  O_CREAT | O_WRITE);
+  // if the file is available, write to it:
+  if (dataFile) {
+    dataFile.println(dataString);
+    dataFile.close();
+    }
+
+ZeitOffset = millis(); // offset des timers festlegen
  attachInterrupt(0, Motor, RISING);
  attachInterrupt(1, Kardanwelle, RISING);
 }
