@@ -22,7 +22,7 @@
 
 #include <SD.h>
 #include "max6675.h"
-//#define DEBUG   //Debug einschalten verlangsammt 110ms
+#define DEBUG   //Debug einschalten verlangsammt 110ms
 
 #define Temperatur
 
@@ -34,6 +34,15 @@
 // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
 // 53 on the Mega) must be left as an output or the SD library
 // functions will not work.
+
+// Define various ADC prescaler
+const unsigned char PS_16 = (1 << ADPS2);
+const unsigned char PS_32 = (1 << ADPS2) | (1 << ADPS0);
+const unsigned char PS_64 = (1 << ADPS2) | (1 << ADPS1);
+const unsigned char PS_128 = (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+
+
+
 const int chipSelect = 4;
 unsigned long ZeitOffset = 0;
 // Thermoelement 
@@ -76,6 +85,17 @@ void setup()
 {
  // Open serial communications and wait for port to open:
   Serial.begin(9600);
+  
+   // set up the ADC
+  ADCSRA &= ~PS_128;  // remove bits set by Arduino library
+
+  // you can choose a prescaler from above.
+  // PS_16, PS_32, PS_64 or PS_128
+  ADCSRA |= PS_128;    // set our own prescaler to 64 
+
+  
+  
+  
 #ifdef DEBUG
     Serial.println("MAX6675 test");
 #endif
