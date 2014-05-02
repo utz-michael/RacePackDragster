@@ -103,11 +103,21 @@ digitalWrite(10, HIGH);// Explicitly disable Ethernet
 
 #ifdef BESCHLEUNIGUNG // Kallibrierung Beschleunigungssensor
 delay (1000);
-for ( i=0; i <= 255; i++){
+for ( i=0; i < 50; i++){
 kalibrierungX = kalibrierungX + analogRead(analogPinX);
 kalibrierungY = kalibrierungY + analogRead(analogPinY);
 kalibrierungZ = kalibrierungZ + analogRead(analogPinZ);
 }
+
+ Serial.print("Kalibrierung X: ");
+  Serial.println(kalibrierungX);
+  Serial.print("Kalibrierung Y: ");
+  Serial.println(kalibrierungY);
+  Serial.print("Kalibrierung Z: ");
+  Serial.println(kalibrierungZ);
+
+
+
 kalibrierungX = kalibrierungX / i;
 kalibrierungY = kalibrierungY / i;
 kalibrierungZ = kalibrierungZ / i;
