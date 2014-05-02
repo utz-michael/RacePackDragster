@@ -109,13 +109,6 @@ kalibrierungY = kalibrierungY + analogRead(analogPinY);
 kalibrierungZ = kalibrierungZ + analogRead(analogPinZ);
 }
 
- Serial.print("Kalibrierung X: ");
-  Serial.println(kalibrierungX);
-  Serial.print("Kalibrierung Y: ");
-  Serial.println(kalibrierungY);
-  Serial.print("Kalibrierung Z: ");
-  Serial.println(kalibrierungZ);
-
 
 
 kalibrierungX = kalibrierungX / i;
