@@ -22,7 +22,7 @@
 
 #include <SD.h>
 #include "max6675.h"
-//#define DEBUG   //Debug einschalten verlangsammt 110ms
+#define DEBUG   //Debug einschalten verlangsammt 110ms
 
 //#define Temperatur
 
@@ -101,7 +101,7 @@ digitalWrite(10, HIGH);// Explicitly disable Ethernet
     Serial.println("Card failed, or not present");
 #endif    
     // don't do anything more:
-    return;
+    //return;
   }
 #ifdef DEBUG  
   Serial.println("card initialized.");
