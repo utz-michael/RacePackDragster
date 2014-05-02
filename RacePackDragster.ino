@@ -158,6 +158,8 @@ void loop()
 #endif   
   }
 #endif  
+
+/*
   if (counter >= 10) {   // Motor Motordrehzahl berechenen auf basis 1 impuls pro umdrehung und glättung mit 10 messungen
   zeit = zeit / counter;
   Motordrehzahl = 60000000UL/zeit;
@@ -169,6 +171,11 @@ void loop()
   Kardanwellenrehzahl = 60000000UL/zeit;
   counter2 =0 ;
   }
+ */
+Motordrehzahl = 60000000UL/zeit;
+Kardanwellenrehzahl = 60000000UL/zeit;
+
+ 
 #ifdef DEBUG  
   Serial.print("Motor U/min ");
   Serial.println(Motordrehzahl);
