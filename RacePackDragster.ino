@@ -22,9 +22,9 @@
 
 #include <SD.h>
 #include "max6675.h"
-#define DEBUG   //Debug einschalten verlangsammt 110ms
+define DEBUG   //Debug einschalten verlangsammt 110ms
 
-//#define Temperatur
+#define Temperatur
 
 //#define X_Beschleunigung
 #define Y_Beschleunigung
@@ -41,7 +41,8 @@ int pin = 30; //Start pin für cs
 int thermoDO = 29;
 int thermoCLK = 28;
 int Zylinder[8];
-
+int TempTimer = 170; // intervall zum abrufen der Temperatur wenn zuschnell kein vernünftiger wert
+unsigned long TempMillis = 0;
 // Umdrehung Motor
 int Motordrehzahl = 0;
 unsigned long last=0;
@@ -146,10 +147,16 @@ void loop()
  
 #ifdef Temperatur
 
+if (millis() - TempMillis >= TempTimer ) {
+ 
+
+
    // basic readout test, just print the current temp
    for (int thermoCS=0; thermoCS <= 7; thermoCS++){
   MAX6675 thermocouple(thermoCLK, thermoCS+pin, thermoDO);
   Zylinder[thermoCS] = thermocouple.readCelsius();
+  TempMillis = millis ();
+  
 #ifdef DEBUG  
    Serial.print("Zylinder ");
    Serial.print(thermoCS+1);
@@ -158,7 +165,7 @@ void loop()
 #endif   
   }
 #endif  
-
+}
 /*
   if (counter >= 10) {   // Motor Motordrehzahl berechenen auf basis 1 impuls pro umdrehung und glättung mit 10 messungen
   zeit = zeit / counter;
