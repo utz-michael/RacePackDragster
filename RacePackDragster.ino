@@ -35,6 +35,7 @@
 // 53 on the Mega) must be left as an output or the SD library
 // functions will not work.
 const int chipSelect = 4;
+unsigned long ZeitOffset = 0;
 // Thermoelement 
 int pin = 30; //Start pin für cs 
 int thermoDO = 29;
@@ -135,7 +136,7 @@ delay (5000);
 #endif
 
 
-
+ZeitOffset = millis();
  attachInterrupt(0, Motor, RISING);
  attachInterrupt(1, Kardanwelle, RISING);
 }
@@ -205,7 +206,7 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
 
   // read  sensors and append to the string:
   
-  dataString += String(millis()); // Zeitstempel für Messung eventuell auf microsekunden umstellen
+  dataString += String(millis()- ZeitOffset); // Zeitstempel für Messung eventuell auf microsekunden umstellen
   dataString += ";";
   dataString += String(Motordrehzahl); // Motorumdrehung
   dataString += ";";
