@@ -22,9 +22,14 @@
 
 #include <SD.h>
 #include "max6675.h"
-#define DEBUG   //Debug einschalten
-#define BESCHLEUNIGUNG
+//#define DEBUG   //Debug einschalten verlangsammt 110ms
+
 //#define Temperatur
+
+//#define X_Beschleunigung
+#define Y_Beschleunigung
+//#define Z_Beschleunigung
+
 // On the Ethernet Shield, CS is pin 4. Note that even if it's not
 // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
 // 53 on the Mega) must be left as an output or the SD library
@@ -49,7 +54,7 @@ unsigned long zeit2=60000000UL;
 int counter2 = 0;
 
 // Beschleunigungssensor
-#ifdef BESCHLEUNIGUNG
+
 float BeschleunigungsKonstante = 0.0602;
 int analogPinX = 0;
 int analogPinY = 1;
@@ -58,7 +63,7 @@ int kalibrierungX = 0;
 int kalibrierungY = 0;
 int kalibrierungZ = 0;
 int i=0;
-#endif
+
 
 
 float X = 0;
@@ -101,7 +106,7 @@ digitalWrite(10, HIGH);// Explicitly disable Ethernet
   Serial.println("card initialized.");
 #endif  
 
-#ifdef BESCHLEUNIGUNG // Kallibrierung Beschleunigungssensor
+ // Kallibrierung Beschleunigungssensor
 delay (1000);
 for ( i=0; i < 50; i++){
 kalibrierungX = kalibrierungX + analogRead(analogPinX);
@@ -115,7 +120,7 @@ kalibrierungX = kalibrierungX / i;
 kalibrierungY = kalibrierungY / i;
 kalibrierungZ = kalibrierungZ / i;
 
-#endif
+
 
 #ifdef DEBUG
 
@@ -170,13 +175,17 @@ void loop()
   Serial.println(Kardanwellenrehzahl);
 #endif  
 
-#ifdef BESCHLEUNIGUNG
 
+#ifdef X_Beschleunigung
 X = (analogRead(analogPinX)-kalibrierungX)*BeschleunigungsKonstante;
-Y = (analogRead(analogPinY)-kalibrierungY)*BeschleunigungsKonstante;
-Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
-
 #endif
+#ifdef Y_Beschleunigung
+Y = (analogRead(analogPinY)-kalibrierungY)*BeschleunigungsKonstante;
+#endif
+#ifdef Z_Beschleunigung
+Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
+#endif
+
 
 #ifdef DEBUG  
   Serial.print("X: ");
@@ -202,12 +211,18 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
   dataString += ";";
   dataString += String(Kardanwellenrehzahl); // Kardanwellenrehzahl
   dataString += ";";
+  #ifdef X_Beschleunigung
   dataString += String(X); // Beschleunigung X
   dataString += ";";
+  #endif
+  #ifdef Y_Beschleunigung
   dataString += String(Y); // Beschleunigung X
   dataString += ";";
+  #endif
+  #ifdef Z_Beschleunigung
   dataString += String(Z); // Beschleunigung X
   dataString += ";";
+  #endif
   for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
     int sensor = Zylinder[thermoCS];
     dataString += String(sensor);
