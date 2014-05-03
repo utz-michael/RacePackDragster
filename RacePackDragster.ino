@@ -46,7 +46,7 @@ const unsigned char PS_128 = (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
 SdFat sd;
 SdFile myFile;
 
-const int chipSelect = 4;
+const int chipSelect = 10;
 unsigned long ZeitOffset = 0;
 // Thermoelement 
 int pin = 30; //Start pin für cs 
