@@ -24,7 +24,7 @@
 
 //#include <SD.h>
 #include "max6675.h"
-#define DEBUG   //Debug einschalten verlangsammt 110ms
+//#define DEBUG   //Debug einschalten verlangsammt 110ms
 
 #define Temperatur
 
@@ -94,7 +94,7 @@ void setup()
 
   // you can choose a prescaler from above.
   // PS_16, PS_32, PS_64 or PS_128
-  ADCSRA |= PS_128;    // set our own prescaler to 64 
+  ADCSRA |= PS_16;    // set our own prescaler to 64 
 
   
   
@@ -109,18 +109,11 @@ void setup()
   Serial.print("Initializing SD card...");
 #endif  
   // make sure that the default chip select pin is set to
-  // output, even if you don't use it:
-pinMode(53, OUTPUT);                       // set the SS pin as an output (necessary!)
-pinMode(4, OUTPUT);                  // SD select pin
-pinMode(10, OUTPUT);                  // Ethernet select pin
-digitalWrite(53, HIGH);                    // ? (not sure)
-digitalWrite(4, LOW);               // Explicitly enable SD
-digitalWrite(10, HIGH);// Explicitly disable Ethernet
 
   // Initialize SdFat or print a detailed error message and halt
   // Use half speed like the native library.
   // change to SPI_FULL_SPEED for more performance.
-  if (!sd.begin(chipSelect, SPI_HALF_SPEED)) sd.initErrorHalt();
+  if (!sd.begin(chipSelect, SPI_FULL_SPEED)) sd.initErrorHalt();
  
 
    
