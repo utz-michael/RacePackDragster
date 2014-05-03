@@ -99,15 +99,15 @@ void setup()
   
   
   
-#ifdef DEBUG
+
     Serial.println("MAX6675 test");
-#endif
+
   // wait for MAX chip to stabilize
   delay(500);
 
-#ifdef DEBUG
+
   Serial.print("Initializing SD card...");
-#endif  
+ 
   // make sure that the default chip select pin is set to
 
   // Initialize SdFat or print a detailed error message and halt
@@ -134,7 +134,7 @@ kalibrierungZ = kalibrierungZ / i;
 
 
 
-#ifdef DEBUG
+
 
   Serial.print("Kalibrierung X: ");
   Serial.println(kalibrierungX);
@@ -142,9 +142,9 @@ kalibrierungZ = kalibrierungZ / i;
   Serial.println(kalibrierungY);
   Serial.print("Kalibrierung Z: ");
   Serial.println(kalibrierungZ);
-delay (5000);
+delay (1000);
 
-#endif
+
 // Überschrift schreiben
 
 
@@ -270,8 +270,10 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
  // File dataFile = SD.open("datalog.csv", FILE_WRITE);
+ if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
+    sd.errorHalt("opening datalog.csv for write failed");
+  }
 
-myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END);
 
     myFile.println(dataString);
     myFile.close();
