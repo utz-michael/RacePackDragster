@@ -19,8 +19,10 @@
  This example code is in the public domain.
  	 
  */
+#include <SdFat.h>
 
-#include <SD.h>
+
+//#include <SD.h>
 #include "max6675.h"
 #define DEBUG   //Debug einschalten verlangsammt 110ms
 
@@ -41,7 +43,8 @@ const unsigned char PS_32 = (1 << ADPS2) | (1 << ADPS0);
 const unsigned char PS_64 = (1 << ADPS2) | (1 << ADPS1);
 const unsigned char PS_128 = (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
 
-
+SdFat sd;
+SdFile myFile;
 
 const int chipSelect = 4;
 unsigned long ZeitOffset = 0;
@@ -110,23 +113,17 @@ void setup()
 pinMode(53, OUTPUT);                       // set the SS pin as an output (necessary!)
 pinMode(4, OUTPUT);                  // SD select pin
 pinMode(10, OUTPUT);                  // Ethernet select pin
-digitalWrite(53, LOW);                    // ? (not sure)
+digitalWrite(53, HIGH);                    // ? (not sure)
 digitalWrite(4, LOW);               // Explicitly enable SD
 digitalWrite(10, HIGH);// Explicitly disable Ethernet
 
-  
+  // Initialize SdFat or print a detailed error message and halt
+  // Use half speed like the native library.
+  // change to SPI_FULL_SPEED for more performance.
+  if (!sd.begin(chipSelect, SPI_HALF_SPEED)) sd.initErrorHalt();
+ 
 
-  // see if the card is present and can be initialized:
-  if (!SD.begin(chipSelect)) {
-#ifdef DEBUG    
-    Serial.println("Card failed, or not present");
-#endif    
-    // don't do anything more:
-    //return;
-  }
-#ifdef DEBUG  
-  Serial.println("card initialized.");
-#endif  
+   
 
  // Kallibrierung Beschleunigungssensor
 delay (1000);
@@ -159,12 +156,14 @@ delay (5000);
 
 
 String dataString = "Zeit;Motordrehzahl;Kardanwelle;Beschleunigung;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
-File dataFile = SD.open("datalog.csv",  O_CREAT | O_WRITE);
-  // if the file is available, write to it:
-  if (dataFile) {
-    dataFile.println(dataString);
-    dataFile.close();
-    }
+  // open the file for write at end like the Native SD library
+  if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
+    sd.errorHalt("opening datalog.csv for write failed");
+  }
+
+    myFile.println(dataString);
+    myFile.close();
+    
 
 ZeitOffset = millis(); // offset des timers festlegen
  attachInterrupt(0, Motor, RISING);
@@ -278,11 +277,11 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
  // File dataFile = SD.open("datalog.csv", FILE_WRITE);
-File dataFile = SD.open("datalog.csv",  O_CREAT | O_WRITE);
-  // if the file is available, write to it:
-  if (dataFile) {
-    dataFile.println(dataString);
-    dataFile.close();
+
+myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END);
+
+    myFile.println(dataString);
+    myFile.close();
     
    
     // print to the serial port too:
@@ -290,13 +289,9 @@ File dataFile = SD.open("datalog.csv",  O_CREAT | O_WRITE);
     Serial.println(dataString);
 #endif    
  
-}  
+ 
   // if the file isn't open, pop up an error:
-  else {
-#ifdef DEBUG    
-    Serial.println("error opening datalog.csv");
-#endif    
-  } 
+
   
 }
 
