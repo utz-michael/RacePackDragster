@@ -86,6 +86,7 @@ float Z = 0;
 
 
 char myChar = 10; // LF für datenstrom
+int sampl = 10; // anzahl samles vor dem Speichern
 
 void setup()
 {
@@ -170,7 +171,7 @@ void loop()
 {
   
 String dataString = "";
-for (int i=0; i <= TempTimer; i++){
+for (int i=0; i <= sampl; i++){
   
 #ifdef Temperatur
 
@@ -208,6 +209,7 @@ if (millis() - TempMillis >= TempTimer ) {
  */
 Motordrehzahl = 60000000UL/zeit;
 Kardanwellenrehzahl = 60000000UL/zeit;
+
 
  
 #ifdef DEBUG  
