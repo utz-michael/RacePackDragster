@@ -85,10 +85,8 @@ float Y = 0;
 float Z = 0;
 
 
-String test0;
-String test1;
-String test2;
-String test;
+char myChar = 10; // LF für datenstrom
+
 void setup()
 {
  // Open serial communications and wait for port to open:
@@ -170,7 +168,9 @@ ZeitOffset = millis(); // offset des timers festlegen
 
 void loop()
 {
-for (int i=0; i <= 3; i++){
+  
+String dataString = "";
+for (int i=0; i <= TempTimer; i++){
   
 #ifdef Temperatur
 
@@ -243,8 +243,7 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
   
   
   // make a string for assembling the data to log:
-  String dataString = "";
-
+  
   // read  sensors and append to the string:
   
   dataString += String(millis()- ZeitOffset); // Zeitstempel für Messung eventuell auf microsekunden umstellen
@@ -272,7 +271,7 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
       dataString += ";"; 
     }
   }
-
+dataString += myChar;
 
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
@@ -282,7 +281,7 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
  // }
 
     
- test += String(i) =   dataString;
+ 
 //    myFile.println(dataString);
   
  //   myFile.close();
@@ -290,11 +289,13 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
   }
-   myFile.println(test0);
-   myFile.println(test1);
-   myFile.println(test2);
+  
+  
+   myFile.print(dataString);
+   
   
   myFile.close(); 
+  
     // print to the serial port too:
 #ifdef DEBUG    
     Serial.println(dataString);
