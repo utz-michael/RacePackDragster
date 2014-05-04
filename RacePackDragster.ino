@@ -98,7 +98,7 @@ void setup()
 
   // you can choose a prescaler from above.
   // PS_16, PS_32, PS_64 or PS_128
-  ADCSRA |= PS_16;    // set our own prescaler to 64 
+  ADCSRA |= PS_128;    // set our own prescaler to 64 
 
   
   
