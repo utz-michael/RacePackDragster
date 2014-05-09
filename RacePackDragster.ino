@@ -24,7 +24,7 @@
 
 //#include <SD.h>
 #include "max6675.h"
-//#define DEBUG   //Debug einschalten verlangsammt 110ms
+#define DEBUG   //Debug einschalten verlangsammt 110ms
 
 #define Temperatur
 
@@ -163,8 +163,8 @@ String dataString = "Zeit;Motordrehzahl;Kardanwelle;Beschleunigung;Zylinder 1;Zy
     
 
 ZeitOffset = millis(); // offset des timers festlegen
- attachInterrupt(0, Motor, RISING);
- attachInterrupt(1, Kardanwelle, RISING);
+ attachInterrupt(0, Motor, FALLING);
+ attachInterrupt(1, Kardanwelle, FALLING);
 }
 
 void loop()
@@ -207,8 +207,8 @@ if (millis() - TempMillis >= TempTimer ) {
   counter2 =0 ;
   }
  */
-Motordrehzahl = 60000000UL/zeit;
-Kardanwellenrehzahl = 60000000UL/zeit;
+Motordrehzahl = 60000000/zeit/4;
+Kardanwellenrehzahl = 60000000/zeit2;
 
 
  
@@ -314,19 +314,28 @@ void Motor(){
       detachInterrupt(0);                         // Interrupt ausschalten damit er uns nicht beißt
       unsigned long m = micros();                 // Microsekundenzähler auslesen
       unsigned long v = m - last;                 // Differenz zum letzten Durchlauf berechnen
-      zeit = zeit + v;  //für glättung ansonsten zeit = v;
-      counter++;
-      last = m;       // und wieder den letzten Wert merken
-      attachInterrupt(0, Motor, RISING );    // Interrupt wieder einschalten.
+      
+      if (v > 5000) {                             // ignorieren wenn <= 5ms (Kontaktpreller)
+      zeit = v;                                // Wert in dauer übernehmen
+          last = m;                                 // und wieder den letzten Wert merken
+        }
+      
+      
+      attachInterrupt(0, Motor, FALLING );   
+     // Interrupt wieder einschalten.
    }
   
 void Kardanwelle(){ 
       detachInterrupt(1);                         // Interrupt ausschalten damit er uns nicht beißt
       unsigned long m2 = micros();                 // Microsekundenzähler auslesen
       unsigned long v2 = m2 - last2;                 // Differenz zum letzten Durchlauf berechnen
-      zeit2 = zeit2 + v2; //für glättung ansonsten zeit2 = v;
-      counter2++;
-      last2 = m2;       // und wieder den letzten Wert merken
-      attachInterrupt(0, Kardanwelle, RISING );    // Interrupt wieder einschalten.
+      
+      if (v2 > 5000) {                             // ignorieren wenn <= 5ms (Kontaktpreller)
+      zeit2 = v2;                                // Wert in dauer übernehmen
+          last2 = m2;                                 // und wieder den letzten Wert merken
+        }
+     
+      attachInterrupt(1, Kardanwelle, FALLING ); 
+       // Interrupt wieder einschalten.
    }  
 
