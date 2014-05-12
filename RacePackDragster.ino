@@ -24,7 +24,7 @@
 
 //#include <SD.h>
 #include "max6675.h"
-#define DEBUG   //Debug einschalten verlangsammt 110ms
+//#define DEBUG   //Debug einschalten verlangsammt 110ms
 
 #define Temperatur
 
@@ -86,7 +86,7 @@ float Z = 0;
 
 
 char myChar = 10; // LF für datenstrom
-int sampl = 10; // anzahl samles vor dem Speichern
+int sampl = 8; // anzahl samles vor dem Speichern
 
 void setup()
 {
@@ -163,8 +163,10 @@ String dataString = "Zeit;Motordrehzahl;Kardanwelle;Beschleunigung;Zylinder 1;Zy
     
 
 ZeitOffset = millis(); // offset des timers festlegen
+
  attachInterrupt(0, Motor, FALLING);
  attachInterrupt(1, Kardanwelle, FALLING);
+ attachInterrupt(2, Transbrake, FALLING);
 }
 
 void loop()
@@ -208,6 +210,8 @@ if (millis() - TempMillis >= TempTimer ) {
   }
  */
 Motordrehzahl = 60000000/zeit/4;
+
+
 Kardanwellenrehzahl = 60000000/zeit2;
 
 
@@ -315,7 +319,7 @@ void Motor(){
       unsigned long m = micros();                 // Microsekundenzähler auslesen
       unsigned long v = m - last;                 // Differenz zum letzten Durchlauf berechnen
       
-      if (v > 5000) {                             // ignorieren wenn <= 5ms (Kontaktpreller)
+      if (v > 1600) {                             // ignorieren wenn <= 5ms (Kontaktpreller)
       zeit = v;                                // Wert in dauer übernehmen
           last = m;                                 // und wieder den letzten Wert merken
         }
@@ -339,3 +343,8 @@ void Kardanwelle(){
        // Interrupt wieder einschalten.
    }  
 
+void Transbrake(){
+  detachInterrupt(2);
+  ZeitOffset = millis();                         
+  attachInterrupt(2, Transbrake, FALLING ); 
+  }
