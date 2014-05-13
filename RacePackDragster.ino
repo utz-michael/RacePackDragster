@@ -51,6 +51,7 @@ int thermoCLK = 27;
 int Zylinder[8];
 int TempTimer = 170; // intervall zum abrufen der Temperatur wenn zuschnell kein vernünftiger wert
 unsigned long TempMillis = 0;
+
 // Umdrehung Motor
 int Motordrehzahl = 0;
 unsigned long last=0;
@@ -80,9 +81,11 @@ float X = 0;
 float Y = 0;
 float Z = 0;
 
-
+// aufzeichnug
 char myChar = 10; // LF für datenstrom
 int sampl = 8; // anzahl samles vor dem Speichern
+boolean StartAufzeichung = false; // steuerung der Aufzeichnung
+
 
 void setup()
 {
@@ -156,7 +159,7 @@ ZeitOffset = millis(); // offset des timers festlegen
 
  attachInterrupt(0, Motor, FALLING);
  attachInterrupt(1, Kardanwelle, FALLING);
- attachInterrupt(2, Transbrake, FALLING);
+ 
 }
 
 void loop()
@@ -282,6 +285,8 @@ dataString += myChar;
   
  //   myFile.close();
  }
+ 
+ if (StartAufzeichung == true ){
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
   }
@@ -291,7 +296,7 @@ dataString += myChar;
    
   
   myFile.close(); 
-  
+  }
     // print to the serial port too:
 #ifdef DEBUG    
     Serial.println(dataString);
@@ -311,8 +316,9 @@ void Motor(){
       
       if (v > 1600) {                             // ignorieren wenn <= 5ms (Kontaktpreller)
       zeit = v;                                // Wert in dauer übernehmen
-          last = m;                                 // und wieder den letzten Wert merken
-        }
+      last = m;         // und wieder den letzten Wert merken
+     StartAufzeichung = true;  // beim ersten drehen des motors aufzeichung starten  
+      }
       
       
       attachInterrupt(0, Motor, FALLING );   
@@ -333,8 +339,4 @@ void Kardanwelle(){
        // Interrupt wieder einschalten.
    }  
 
-void Transbrake(){
-  detachInterrupt(2);
-  ZeitOffset = millis();                         
-  attachInterrupt(2, Transbrake, FALLING ); 
-  }
+
