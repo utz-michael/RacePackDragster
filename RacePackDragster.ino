@@ -81,6 +81,10 @@ float X = 0;
 float Y = 0;
 float Z = 0;
 
+// Digital pind für Transbrake und Lachgas
+int Transbrake = 25;
+int Lachgas = 23;
+
 // aufzeichnug
 char myChar = 10; // LF für datenstrom
 int sampl = 8; // anzahl samles vor dem Speichern
@@ -101,7 +105,9 @@ void setup()
 
   // wait for MAX chip to stabilize
   delay(500);
-
+ 
+  pinMode(Lachgas, INPUT);  // Digital pin als ausgang definieren
+  pinMode(Transbrake, INPUT); // Digital pin als ausgang definieren
 
   Serial.print("Initializing SD card...");
  
@@ -145,7 +151,7 @@ delay (1000);
 // Überschrift schreiben
 
 
-String dataString = "Zeit;Motordrehzahl;Kardanwelle;Beschleunigung;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+String dataString = "Zeit;Motordrehzahl;Kardanwelle;Transbrake;Lachgas;Beschleunigung;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -250,6 +256,10 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
   dataString += String(Motordrehzahl); // Motorumdrehung
   dataString += ";";
   dataString += String(Kardanwellenrehzahl); // Kardanwellenrehzahl
+  dataString += ";";
+  dataString += String(digitalRead(Transbrake)); // Transbrak
+  dataString += ";";
+  dataString += String(digitalRead(Lachgas)); // Lachgas
   dataString += ";";
   #ifdef X_Beschleunigung
   dataString += String(X); // Beschleunigung X
