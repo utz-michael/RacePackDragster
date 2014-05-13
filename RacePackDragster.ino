@@ -24,8 +24,8 @@ const int chipSelect = 10; // used as the CS pin, the hardware CS pin (10 on mos
 unsigned long ZeitOffset = 0;
 // Thermoelement 
 int pin = 30; //Start pin für cs 
-int thermoDO = 29;
-int thermoCLK = 27;
+int thermoDO = 27;
+int thermoCLK = 29;
 int Zylinder[8];
 int TempTimer = 170; // intervall zum abrufen der Temperatur wenn zu schnell kein vernünftiger wert
 unsigned long TempMillis = 0;
