@@ -10,7 +10,7 @@
  	 
  */
 #include <SdFat.h>
-#include "max6675.h"
+
 //#define DEBUG   //Debug einschalten verlangsammt 110ms
 #define Temperatur
 //#define X_Beschleunigung
@@ -27,8 +27,7 @@ int pin = 30; //Start pin für cs
 int thermoDO = 27;
 int thermoCLK = 29;
 int Zylinder[8];
-int TempTimer = 170; // intervall zum abrufen der Temperatur wenn zu schnell kein vernünftiger wert
-unsigned long TempMillis = 0;
+
 
 // Umdrehung Motor
 int Motordrehzahl = 0;
@@ -73,7 +72,7 @@ void setup()
 {
  // Open serial communications and wait for port to open:
   Serial.begin(9600);
-    Serial.println("MAX6675 test");
+   
 
   // wait for MAX chip to stabilize
   delay(500);
@@ -132,13 +131,12 @@ String dataString = ""; // daten string anlegen
 for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
   
 #ifdef Temperatur
-if (millis() - TempMillis >= TempTimer ) {  // alle 170 ms temperatur auslesen
+
 
    // basic readout test, just print the current temp
    for (int thermoCS=0; thermoCS <= 7; thermoCS++){
-  MAX6675 thermocouple(thermoCLK, thermoCS+pin, thermoDO);
-  Zylinder[thermoCS] = thermocouple.readCelsius();
-  TempMillis = millis ();
+  Zylinder[thermoCS] = analogRead(thermoCS+7)*0.735 ;
+  
   
   #ifdef DEBUG  
    Serial.print("Zylinder ");
@@ -220,7 +218,7 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
   }
 dataString += myChar; // cr linefeed anhängen
 
- }
+
 // Datensatz speichern 
  if (StartAufzeichung == true ){
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
