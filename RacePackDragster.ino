@@ -143,7 +143,7 @@ for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
   #endif   
   }
 #endif  
-}
+
 // Drehzahlen berechnen
 Motordrehzahl = 60000000/zeit/4;
 Kardanwellenrehzahl = 60000000/zeit2;
@@ -215,7 +215,7 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
   }
 dataString += myChar; // cr linefeed anhängen
 
-
+}
 // Datensatz speichern 
  if (StartAufzeichung == true ){
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
