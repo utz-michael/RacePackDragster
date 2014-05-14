@@ -23,9 +23,6 @@ SdFile myFile;
 const int chipSelect = 10; // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
 unsigned long ZeitOffset = 0;
 // Thermoelement 
-int pin = 30; //Start pin für cs 
-int thermoDO = 27;
-int thermoCLK = 29;
 int Zylinder[8];
 
 
