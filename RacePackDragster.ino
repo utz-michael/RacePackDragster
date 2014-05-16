@@ -31,6 +31,8 @@ int Motordrehzahl = 0;
 unsigned long last=0;
 unsigned long zeit=60000000UL;
 int counter = 0;
+int zeitcounter = 0;
+unsigned long zeitglatt=0;
 
 // Umdrehung Kardanwelle
 int Kardanwellenrehzahl = 0;
@@ -145,7 +147,18 @@ for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
 #endif  
 
 // Drehzahlen berechnen
-Motordrehzahl = 60000000/zeit/4;
+
+if (zeitcounter >= 9) {
+detachInterrupt(0); 
+//zeitglatt / 10;
+Motordrehzahl = 60000000/zeitglatt/4/zeitcounter;
+zeitcounter = 0;
+attachInterrupt(0, Motor, FALLING ); 
+}
+
+
+
+
 Kardanwellenrehzahl = 60000000/zeit2;
 
 #ifdef DEBUG  
@@ -236,9 +249,11 @@ void Motor(){
       unsigned long m = micros();                 // Microsekundenzähler auslesen
       unsigned long v = m - last;                 // Differenz zum letzten Durchlauf berechnen
       
-      if (v > 1600) {                             // ignorieren wenn <= 1.6 ms (Kontaktpreller)
+      if (v > 1600 && v < (zeit * 2.0)) {                             // ignorieren wenn <= 1.6 ms (Kontaktpreller)
       zeit = v;                                // Wert in dauer übernehmen
       last = m;         // und wieder den letzten Wert merken
+     zeitglatt = zeitglatt + zeit;
+     zeitcounter ++;
      StartAufzeichung = true;  // beim ersten drehen des motors aufzeichung starten  
       }  
       attachInterrupt(0, Motor, FALLING );   
