@@ -195,9 +195,9 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
   dataString += ";";
   dataString += String(Kardanwellenrehzahl); // Kardanwellenrehzahl
   dataString += ";";
-  dataString += String(digitalRead(Transbrake)); // Transbrak
+  dataString += String(digitalRead(Transbrake)*1000); // Transbrak
   dataString += ";";
-  dataString += String(digitalRead(Lachgas)); // Lachgas
+  dataString += String(digitalRead(Lachgas)*1000); // Lachgas
   dataString += ";";
   #ifdef X_Beschleunigung
   dataString += String(X); // Beschleunigung X
