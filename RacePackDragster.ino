@@ -10,8 +10,7 @@
  	 
  */
 #include <SdFat.h>
-
-//#define DEBUG   //Debug einschalten verlangsammt 110ms
+#define DEBUG   //Debug einschalten verlangsammt 110ms
 #define Temperatur
 //#define X_Beschleunigung
 #define Y_Beschleunigung
@@ -29,11 +28,12 @@ int Zylinder[8];
 // Umdrehung Motor
 int Motordrehzahl = 0;
 unsigned long last=0;
-unsigned long zeit=60000000UL;
+unsigned long zeit=15000;
 int counter = 0;
 int zeitcounter = 0;
 unsigned long zeitglatt=0;
-
+unsigned long zeitglatt_neu = 0;
+unsigned long zeituebergabe = 15000;
 // Umdrehung Kardanwelle
 int Kardanwellenrehzahl = 0;
 unsigned long last2=0;
@@ -148,16 +148,7 @@ for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
 
 // Drehzahlen berechnen
 
-if (zeitcounter >= 9) {
-detachInterrupt(0); 
-//zeitglatt / 10;
-Motordrehzahl = 60000000/zeitglatt/4/zeitcounter;
-zeitcounter = 0;
-attachInterrupt(0, Motor, FALLING ); 
-}
-
-
-
+Motordrehzahl = 60000000/zeituebergabe/4;
 
 Kardanwellenrehzahl = 60000000/zeit2;
 
@@ -249,11 +240,37 @@ void Motor(){
       unsigned long m = micros();                 // Microsekundenzähler auslesen
       unsigned long v = m - last;                 // Differenz zum letzten Durchlauf berechnen
       
-      if (v > 1600 && v < (zeit * 2.0)) {                             // ignorieren wenn <= 1.6 ms (Kontaktpreller)
+      if (v > 1600 && v < (zeit * 2.5)) {                             // ignorieren wenn <= 1.6 ms (Kontaktpreller)
       zeit = v;                                // Wert in dauer übernehmen
       last = m;         // und wieder den letzten Wert merken
-     zeitglatt = zeitglatt + zeit;
+     zeitglatt_neu = zeitglatt + zeit;
+     zeitglatt = zeitglatt_neu;
+     
      zeitcounter ++;
+    
+     #ifdef DEBUG  
+   Serial.print("Zeit: ");
+   Serial.println(zeit);
+   Serial.print("Zeitgessammt");
+   Serial.println(zeitglatt);
+   Serial.print("Counter");
+   Serial.println(zeitcounter); 
+      #endif 
+     
+     
+     if ( zeitcounter >=10) { 
+       zeituebergabe = zeitglatt /  zeitcounter ;
+       zeitcounter = 0 ;
+       zeitglatt = 0;
+       zeitglatt_neu = 0;
+       
+           #ifdef DEBUG  
+   Serial.print("Zeituebergabe");
+   Serial.println(zeituebergabe);
+   
+      #endif 
+       }
+       
      StartAufzeichung = true;  // beim ersten drehen des motors aufzeichung starten  
       }  
       attachInterrupt(0, Motor, FALLING );   
