@@ -10,7 +10,7 @@
  	 
  */
 #include <SdFat.h>
-#define DEBUG   //Debug einschalten verlangsammt 110ms
+//#define DEBUG   //Debug einschalten verlangsammt 110ms
 #define Temperatur
 //#define X_Beschleunigung
 #define Y_Beschleunigung
@@ -28,12 +28,13 @@ int Zylinder[8];
 // Umdrehung Motor
 int Motordrehzahl = 0;
 unsigned long last=0;
-unsigned long zeit=15000;
+unsigned long zeit=30000;
 int counter = 0;
 int zeitcounter = 0;
 unsigned long zeitglatt=0;
 unsigned long zeitglatt_neu = 0;
 unsigned long zeituebergabe = 15000;
+
 // Umdrehung Kardanwelle
 int Kardanwellenrehzahl = 0;
 unsigned long last2=0;
@@ -239,8 +240,11 @@ void Motor(){
       detachInterrupt(0);                         // Interrupt ausschalten damit er uns nicht beißt
       unsigned long m = micros();                 // Microsekundenzähler auslesen
       unsigned long v = m - last;                 // Differenz zum letzten Durchlauf berechnen
-      
-      if (v > 1600 && v < (zeit * 2.5)) {                             // ignorieren wenn <= 1.6 ms (Kontaktpreller)
+      if (v > 30000 )   { 
+       zeit = v;                                // Wert in dauer übernehmen
+      last = m; 
+    } 
+      if (v > 1600 && v < zeit * 3  ) {                             // ignorieren wenn <= 1.6 ms (Kontaktpreller)
       zeit = v;                                // Wert in dauer übernehmen
       last = m;         // und wieder den letzten Wert merken
      zeitglatt_neu = zeitglatt + zeit;
@@ -273,6 +277,7 @@ void Motor(){
        
      StartAufzeichung = true;  // beim ersten drehen des motors aufzeichung starten  
       }  
+      
       attachInterrupt(0, Motor, FALLING );   
      // Interrupt wieder einschalten.
    }
