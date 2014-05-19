@@ -251,15 +251,7 @@ void Motor(){
      zeitglatt = zeitglatt_neu;
      
      zeitcounter ++;
-    
-     #ifdef DEBUG  
-   Serial.print("Zeit: ");
-   Serial.println(zeit);
-   Serial.print("Zeitgessammt");
-   Serial.println(zeitglatt);
-   Serial.print("Counter");
-   Serial.println(zeitcounter); 
-      #endif 
+
      
      
      if ( zeitcounter >=10) { 
@@ -267,12 +259,6 @@ void Motor(){
        zeitcounter = 0 ;
        zeitglatt = 0;
        zeitglatt_neu = 0;
-       
-           #ifdef DEBUG  
-   Serial.print("Zeituebergabe");
-   Serial.println(zeituebergabe);
-   
-      #endif 
        }
        
      StartAufzeichung = true;  // beim ersten drehen des motors aufzeichung starten  
