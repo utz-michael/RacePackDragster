@@ -135,7 +135,7 @@ for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
 
    // basic readout test, just print the current temp
    for (int thermoCS=0; thermoCS <= 7; thermoCS++){
-  Zylinder[thermoCS] = analogRead(thermoCS+8)*0.735 ;
+  Zylinder[thermoCS] = analogRead(thermoCS+8) ;
   
   
   #ifdef DEBUG  
