@@ -61,7 +61,7 @@ float Z = 0;
 // Digital pind für Transbrake und Lachgas
 int Transbrake = 25;
 int Lachgas = 23;
-
+int start = 0;
 // aufzeichnug
 char myChar = 10; // LF für datenstrom
 int sampl = 7; // anzahl samles vor dem Speichern
@@ -182,8 +182,9 @@ Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
 #endif
 
 
-
-  
+if (digitalRead(Transbrake)== 1) { start = 1;}
+if (digitalRead(Transbrake)== 0 && start == 1) { start = 2;}
+if (start == 2) { start = 0;  ZeitOffset = millis(); }
   
   // make a string for assembling the data to log:
   
