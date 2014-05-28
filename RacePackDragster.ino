@@ -15,7 +15,7 @@
 #define X_Beschleunigung
 #define Y_Beschleunigung
 #define Z_Beschleunigung
-
+#define G_Empfindlichkeit // Beschleunigungssensor auf 6G empfindlichkeit einstellen
 SdFat sd;
 SdFile myFile;
 
@@ -43,7 +43,9 @@ int counter2 = 0;
 
 // Beschleunigungssensor
 
+
 float BeschleunigungsKonstante = 0.0061224;
+
 int analogPinX = 0;
 int analogPinY = 1;
 int analogPinZ = 2;
@@ -66,6 +68,7 @@ double fZg = 0;
 // Digital pind für Transbrake und Lachgas
 int Transbrake = 25;
 int Lachgas = 23;
+int empfindlichkeit = 27;
 int start = 0;
 // aufzeichnug
 char myChar = 10; // LF für datenstrom
@@ -84,13 +87,20 @@ void setup()
  
   pinMode(Lachgas, INPUT);  // Digital pin als ausgang definieren
   pinMode(Transbrake, INPUT); // Digital pin als ausgang definieren
-
+  pinMode(empfindlichkeit, OUTPUT); //  Digital pin als ausgang definieren
   Serial.print("Initializing SD card...");
  
   // Initialize SdFat or print a detailed error message and halt
   // Use half speed like the native library.
   // change to SPI_FULL_SPEED for more performance.
   if (!sd.begin(chipSelect, SPI_FULL_SPEED)) sd.initErrorHalt();
+ 
+ digitalWrite(empfindlichkeit, LOW);   // Beschleunigungssensor auf 1.5G einstellen 
+
+#ifdef G_Empfindlichkeit
+BeschleunigungsKonstante = 0.02381; // fakrot für 6G
+digitalWrite(empfindlichkeit, HIGH);   // Beschleunigungssensor auf 6G einstellen 
+#endif 
 
  // Kallibrierung Beschleunigungssensor
     delay (1000);
@@ -167,7 +177,7 @@ Kardanwellenrehzahl = 60000000/zeit2;
 
 
 #ifdef X_Beschleunigung
-X = (analogRead(analogPinX)-kalibrierungX)*BeschleunigungsKonstante; ;
+X = (analogRead(analogPinX)-kalibrierungX)*BeschleunigungsKonstante;
 fXg = X * alpha + (fXg * (1.0 - alpha)); // glättung mit tiefpass
 
 #endif
@@ -177,7 +187,7 @@ fYg = Y * alpha + (fYg * (1.0 - alpha));
 
 #endif
 #ifdef Z_Beschleunigung
-Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;;
+Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
 fZg = Z * alpha + (fZg * (1.0 - alpha));
 
 #endif
