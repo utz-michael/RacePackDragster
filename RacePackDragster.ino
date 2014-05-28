@@ -43,7 +43,7 @@ int counter2 = 0;
 
 // Beschleunigungssensor
 
-float BeschleunigungsKonstante = 0.0602;
+float BeschleunigungsKonstante = 0.0061224;
 int analogPinX = 0;
 int analogPinY = 1;
 int analogPinZ = 2;
