@@ -70,7 +70,7 @@ int start = 0;
 // aufzeichnug
 char myChar = 10; // LF für datenstrom
 int sampl = 7; // anzahl samles vor dem Speichern
-boolean StartAufzeichung = true; // steuerung der Aufzeichnung
+boolean StartAufzeichung = false; // steuerung der Aufzeichnung
 
 
 void setup()
