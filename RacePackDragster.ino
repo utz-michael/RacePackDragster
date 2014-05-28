@@ -12,9 +12,9 @@
 #include <SdFat.h>
 //#define DEBUG   //Debug einschalten verlangsammt 110ms
 #define Temperatur
-//#define X_Beschleunigung
+#define X_Beschleunigung
 #define Y_Beschleunigung
-//#define Z_Beschleunigung
+#define Z_Beschleunigung
 
 SdFat sd;
 SdFile myFile;
@@ -113,7 +113,7 @@ void setup()
 
 
 // Überschrift schreiben
-String dataString = "Zeit;Motordrehzahl;Kardanwelle;Transbrake;Lachgas;Beschleunigung;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+String dataString = "Zeit;Motordrehzahl;Kardanwelle;Transbrake;Lachgas;BeschleunigungX;BeschleunigungY;BeschleunigungZ;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
