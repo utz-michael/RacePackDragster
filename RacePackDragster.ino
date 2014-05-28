@@ -51,12 +51,17 @@ int kalibrierungX = 0;
 int kalibrierungY = 0;
 int kalibrierungZ = 0;
 int i=0;
-
+const float alpha = 0.5;
 
 
 float X = 0;
 float Y = 0;
 float Z = 0;
+double fXg = 0;
+double fYg = 0;
+double fZg = 0;
+
+
 
 // Digital pind für Transbrake und Lachgas
 int Transbrake = 25;
@@ -162,13 +167,19 @@ Kardanwellenrehzahl = 60000000/zeit2;
 
 
 #ifdef X_Beschleunigung
-X = (analogRead(analogPinX)-kalibrierungX)*BeschleunigungsKonstante;
+X = analogRead(analogPinX);
+fXg = X * alpha + (fXg * (1.0 - alpha)); // glättung mit tiefpass
+X = (fXg-kalibrierungX)*BeschleunigungsKonstante; // umrechenen in G
 #endif
 #ifdef Y_Beschleunigung
-Y = (analogRead(analogPinY)-kalibrierungY)*BeschleunigungsKonstante;
+Y = analogRead(analogPinY);
+fYg = Y * alpha + (fYg * (1.0 - alpha));
+Y = (fYg-kalibrierungY)*BeschleunigungsKonstante; 
 #endif
 #ifdef Z_Beschleunigung
-Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
+Z = analogRead(analogPinZ);
+fZg = Z * alpha + (fZg * (1.0 - alpha));
+Z = (fZg-kalibrierungZ)*BeschleunigungsKonstante; // umrechenen in G
 #endif
 
 
