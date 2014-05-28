@@ -167,19 +167,19 @@ Kardanwellenrehzahl = 60000000/zeit2;
 
 
 #ifdef X_Beschleunigung
-X = analogRead(analogPinX);
+X = (analogRead(analogPinX)-kalibrierungX)*BeschleunigungsKonstante; ;
 fXg = X * alpha + (fXg * (1.0 - alpha)); // glättung mit tiefpass
-X = (fXg-kalibrierungX)*BeschleunigungsKonstante; // umrechenen in G
+
 #endif
 #ifdef Y_Beschleunigung
-Y = analogRead(analogPinY);
+Y = (analogRead(analogPinY)-kalibrierungY)*BeschleunigungsKonstante;
 fYg = Y * alpha + (fYg * (1.0 - alpha));
-Y = (fYg-kalibrierungY)*BeschleunigungsKonstante; 
+
 #endif
 #ifdef Z_Beschleunigung
-Z = analogRead(analogPinZ);
+Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;;
 fZg = Z * alpha + (fZg * (1.0 - alpha));
-Z = (fZg-kalibrierungZ)*BeschleunigungsKonstante; // umrechenen in G
+
 #endif
 
 
@@ -212,15 +212,15 @@ if (start == 2) { start = 0;  ZeitOffset = millis(); }
   dataString += String(digitalRead(Lachgas)*1000); // Lachgas
   dataString += ";";
   #ifdef X_Beschleunigung
-  dataString += String(X); // Beschleunigung X
+  dataString += String(fXg); // Beschleunigung X
   dataString += ";";
   #endif
   #ifdef Y_Beschleunigung
-  dataString += String(Y); // Beschleunigung X
+  dataString += String(fYg); // Beschleunigung X
   dataString += ";";
   #endif
   #ifdef Z_Beschleunigung
-  dataString += String(Z); // Beschleunigung X
+  dataString += String(fZg); // Beschleunigung X
   dataString += ";";
   #endif
   for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
