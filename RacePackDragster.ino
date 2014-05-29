@@ -15,7 +15,7 @@
 #define X_Beschleunigung
 #define Y_Beschleunigung
 #define Z_Beschleunigung
-#define G_Empfindlichkeit // Beschleunigungssensor auf 6G empfindlichkeit einstellen
+#define G_Empfindlichkeit // muss aktiv sein da gelötet Beschleunigungssensor auf 6G empfindlichkeit einstellen m
 SdFat sd;
 SdFile myFile;
 
@@ -68,7 +68,7 @@ double fZg = 0;
 // Digital pind für Transbrake und Lachgas
 int Transbrake = 25;
 int Lachgas = 23;
-int empfindlichkeit = 31;
+int empfindlichkeit = 31; // nicht aktiv da 3.3 V gelötet
 int start = 0;
 // aufzeichnug
 char myChar = 10; // LF für datenstrom
