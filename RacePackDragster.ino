@@ -53,9 +53,9 @@ int kalibrierungX = 0;
 int kalibrierungY = 0;
 int kalibrierungZ = 0;
 int i=0;
-const float alpha = 0.5;
+//const float alpha = 0.5;
 
-
+const float alpha = 0.1;
 float X = 0;
 float Y = 0;
 float Z = 0;
@@ -73,7 +73,7 @@ int start = 0;
 // aufzeichnug
 char myChar = 10; // LF für datenstrom
 int sampl = 7; // anzahl samles vor dem Speichern
-boolean StartAufzeichung = false; // steuerung der Aufzeichnung
+boolean StartAufzeichung = false ; // steuerung der Aufzeichnung
 
 
 void setup()
