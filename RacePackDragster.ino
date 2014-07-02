@@ -41,6 +41,10 @@ unsigned long last2=0;
 unsigned long zeit2=60000000UL;
 int counter2 = 0;
 
+// MAP Sensor
+
+int MAP = 3;
+
 // Beschleunigungssensor
 
 
@@ -123,7 +127,7 @@ digitalWrite(empfindlichkeit, HIGH);   // Beschleunigungssensor auf 6G einstelle
 
 
 // Überschrift schreiben
-String dataString = "Zeit;Motordrehzahl;Kardanwelle;Transbrake;Lachgas;BeschleunigungX;BeschleunigungY;BeschleunigungZ;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+String dataString = "Zeit;Motordrehzahl;Kardanwelle;Transbrake;Lachgas;MAP;BeschleunigungX;BeschleunigungY;BeschleunigungZ;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -220,6 +224,8 @@ if (start == 2) { start = 0;  ZeitOffset = millis(); }
   dataString += String(digitalRead(Transbrake)*1000); // Transbrak
   dataString += ";";
   dataString += String(digitalRead(Lachgas)*1000); // Lachgas
+  dataString += ";";
+  dataString += String((18.75*((digitalRead(MAP)*0.0049)))-24.075); // MAP in PSI
   dataString += ";";
   #ifdef X_Beschleunigung
   dataString += String(fXg); // Beschleunigung X
