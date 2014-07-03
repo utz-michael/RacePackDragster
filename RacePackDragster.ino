@@ -38,9 +38,12 @@ unsigned long zeituebergabe = 15000;
 // Umdrehung Kardanwelle
 int Kardanwellenrehzahl = 0;
 unsigned long last2=0;
-unsigned long zeit2=60000000UL;
+unsigned long zeit2=30000;
 int counter2 = 0;
-
+int zeitcounter2 = 0;
+unsigned long zeitglatt2=0;
+unsigned long zeitglatt_neu2 = 0;
+unsigned long zeituebergabe2 = 15000;
 // MAP Sensor
 
 int MAP = 3;
@@ -170,7 +173,7 @@ for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
 
 Motordrehzahl = 60000000/zeituebergabe/4;
 
-Kardanwellenrehzahl = 60000000/zeit2;
+Kardanwellenrehzahl = 60000000/zeituebergabe2;
 
 #ifdef DEBUG  
    Serial.print("Motor U/min ");
@@ -206,10 +209,11 @@ fZg = Z * alpha + (fZg * (1.0 - alpha));
   Serial.println(Z);
 #endif
 
-
+ // Zeit auf null setzen wenn Transbrake gelöst wird
+ 
 if (digitalRead(Transbrake)== 1) { start = 1;}
 if (digitalRead(Transbrake)== 0 && start == 1) { start = 2;}
-if (start == 2) { start = 0;  ZeitOffset = millis(); }
+if (start == 2) { start = 0;  ZeitOffset = millis(); } 
   
   // make a string for assembling the data to log:
   
@@ -300,10 +304,29 @@ void Kardanwelle(){
       detachInterrupt(1);                         // Interrupt ausschalten damit er uns nicht beißt
       unsigned long m2 = micros();                 // Microsekundenzähler auslesen
       unsigned long v2 = m2 - last2;                 // Differenz zum letzten Durchlauf berechnen
-      if (v2 > 5000) {                             // ignorieren wenn <= 5ms (Kontaktpreller)
+      if (v2 > 30000) {                             // ignorieren wenn <= 5ms (Kontaktpreller)
       zeit2 = v2;                                // Wert in dauer übernehmen
           last2 = m2;                                 // und wieder den letzten Wert merken
         }
+         if (v2 > 6666 && v2 < zeit2 * 3  ) {                             // ignorieren wenn <= 1.6 ms (Kontaktpreller)
+      zeit2 = v2;                                // Wert in dauer übernehmen
+      last2 = m2;         // und wieder den letzten Wert merken
+     zeitglatt_neu2 = zeitglatt2 + zeit2;
+     zeitglatt2 = zeitglatt_neu2;
+     
+     zeitcounter2 ++;
+
+     
+     
+     if ( zeitcounter2 >=10) { 
+       zeituebergabe2 = zeitglatt2 /  zeitcounter2 ;
+       zeitcounter2 = 0 ;
+       zeitglatt2 = 0;
+       zeitglatt_neu2 = 0;
+       }
+        
+       } 
+        
       attachInterrupt(1, Kardanwelle, FALLING ); 
        // Interrupt wieder einschalten.
    }  
