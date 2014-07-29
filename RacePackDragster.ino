@@ -44,6 +44,8 @@ int zeitcounter2 = 0;
 unsigned long zeitglatt2=0;
 unsigned long zeitglatt_neu2 = 0;
 unsigned long zeituebergabe2 = 15000;
+float Abrollumfang = 2.472; // Abrollumfang hinterreifen
+int streckencounter=0; // anzahl der impulse der strecke 
 // MAP Sensor
 
 int MAP = 3;
@@ -79,7 +81,7 @@ int empfindlichkeit = 31; // nicht aktiv da 3.3 V gelötet
 int start = 0;
 // aufzeichnug
 char myChar = 10; // LF für datenstrom
-int sampl = 7; // anzahl samles vor dem Speichern
+int sampl = 6; // anzahl samles vor dem Speichern
 boolean StartAufzeichung = false ; // steuerung der Aufzeichnung
 
 
@@ -130,7 +132,7 @@ digitalWrite(empfindlichkeit, HIGH);   // Beschleunigungssensor auf 6G einstelle
 
 
 // Überschrift schreiben
-String dataString = "Zeit;Motordrehzahl;Kardanwelle;Transbrake;Lachgas;MAP;BeschleunigungX;BeschleunigungY;BeschleunigungZ;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+String dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;Lachgas;MAP;BeschleunigungX;BeschleunigungY;BeschleunigungZ;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -173,7 +175,7 @@ for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
 
 Motordrehzahl = 60000000/zeituebergabe/4;
 
-Kardanwellenrehzahl = 60000000/zeituebergabe2;
+Kardanwellenrehzahl = 36450000/zeituebergabe2;  // auf Annahme am Hinterrad mit 8 impulsen pro umdrehung
 
 #ifdef DEBUG  
    Serial.print("Motor U/min ");
@@ -209,11 +211,15 @@ fZg = Z * alpha + (fZg * (1.0 - alpha));
   Serial.println(Z);
 #endif
 
- // Zeit auf null setzen wenn Transbrake gelöst wird
+ // Zeit und Streckencounter auf null setzen wenn Transbrake gelöst wird
  
 if (digitalRead(Transbrake)== 1) { start = 1;}
 if (digitalRead(Transbrake)== 0 && start == 1) { start = 2;}
-if (start == 2) { start = 0;  ZeitOffset = millis(); } 
+if (start == 2) { 
+    start = 0;   
+    ZeitOffset = millis(); 
+  streckencounter = 0;
+} 
   
   // make a string for assembling the data to log:
   
@@ -224,6 +230,10 @@ if (start == 2) { start = 0;  ZeitOffset = millis(); }
   dataString += String(Motordrehzahl); // Motorumdrehung
   dataString += ";";
   dataString += String(Kardanwellenrehzahl); // Kardanwellenrehzahl
+  dataString += ";";
+  dataString += String(3.6/(zeituebergabe2/1000000)*Abrollumfang/8); // Geschwindigkeit
+  dataString += ";";
+  dataString += String(Abrollumfang/8*streckencounter); // Strecke
   dataString += ";";
   dataString += String(digitalRead(Transbrake)*1000); // Transbrak
   dataString += ";";
@@ -308,12 +318,12 @@ void Kardanwelle(){
       zeit2 = v2;                                // Wert in dauer übernehmen
           last2 = m2;                                 // und wieder den letzten Wert merken
         }
-         if (v2 > 6666 && v2 < zeit2 * 3  ) {                             // ignorieren wenn <= 1.6 ms (Kontaktpreller)
+         if (v2 > 4000 && v2 < zeit2 * 3  ) {                             // ignorieren wenn <= 4 ms (Kontaktpreller)
       zeit2 = v2;                                // Wert in dauer übernehmen
       last2 = m2;         // und wieder den letzten Wert merken
      zeitglatt_neu2 = zeitglatt2 + zeit2;
      zeitglatt2 = zeitglatt_neu2;
-     
+     streckencounter++;
      zeitcounter2 ++;
 
      
