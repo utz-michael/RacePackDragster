@@ -81,7 +81,7 @@ int empfindlichkeit = 31; // nicht aktiv da 3.3 V gelötet
 int start = 0;
 // aufzeichnug
 char myChar = 10; // LF für datenstrom
-int sampl = 6; // anzahl samles vor dem Speichern
+int sampl = 5; // anzahl samles vor dem Speichern
 boolean StartAufzeichung = false ; // steuerung der Aufzeichnung
 
 
