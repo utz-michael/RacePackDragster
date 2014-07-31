@@ -144,7 +144,7 @@ String dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Tran
 ZeitOffset = millis(); // offset des timers festlegen
 
  attachInterrupt(0, Motor, FALLING);
- attachInterrupt(1, Kardanwelle, FALLING);
+ attachInterrupt(1, Kardanwelle, LOW);
  
 }
 
@@ -314,13 +314,8 @@ void Kardanwelle(){
       detachInterrupt(1);                         // Interrupt ausschalten damit er uns nicht beißt
       unsigned long m2 = micros();                 // Microsekundenzähler auslesen
       unsigned long v2 = m2 - last2;                 // Differenz zum letzten Durchlauf berechnen
-  /*
-      if (v2 > 30000) {                             // ignorieren wenn <= 5ms (Kontaktpreller)
-      zeit2 = v2;                                // Wert in dauer übernehmen
-          last2 = m2;                                 // und wieder den letzten Wert merken
-        }
-        */
-         if (v2 > 4000 && v2 < zeit2 * 3  ) {            // ignorieren wenn <= 4 ms (Kontaktpreller)
+  
+      if (v2 > 4000  ) {            // ignorieren wenn <= 4 ms (Kontaktpreller)
       zeit2 = v2;                                // Wert in dauer übernehmen
       last2 = m2;         // und wieder den letzten Wert merken
      //zeitglatt_neu2 = zeitglatt2 + zeit2;
@@ -339,7 +334,7 @@ Serial.println(zeit2);
         
        } 
         
-      attachInterrupt(1, Kardanwelle, FALLING ); 
+      attachInterrupt(1, Kardanwelle, LOW ); 
        // Interrupt wieder einschalten.
    }  
 
