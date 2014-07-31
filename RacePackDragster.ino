@@ -314,26 +314,28 @@ void Kardanwelle(){
       detachInterrupt(1);                         // Interrupt ausschalten damit er uns nicht beißt
       unsigned long m2 = micros();                 // Microsekundenzähler auslesen
       unsigned long v2 = m2 - last2;                 // Differenz zum letzten Durchlauf berechnen
+  /*
       if (v2 > 30000) {                             // ignorieren wenn <= 5ms (Kontaktpreller)
       zeit2 = v2;                                // Wert in dauer übernehmen
           last2 = m2;                                 // und wieder den letzten Wert merken
         }
-         if (v2 > 4000 && v2 < zeit2 * 3  ) {                             // ignorieren wenn <= 4 ms (Kontaktpreller)
+        */
+         if (v2 > 4000 && v2 < zeit2 * 3  ) {            // ignorieren wenn <= 4 ms (Kontaktpreller)
       zeit2 = v2;                                // Wert in dauer übernehmen
       last2 = m2;         // und wieder den letzten Wert merken
-     zeitglatt_neu2 = zeitglatt2 + zeit2;
-     zeitglatt2 = zeitglatt_neu2;
+     //zeitglatt_neu2 = zeitglatt2 + zeit2;
+     //zeitglatt2 = zeitglatt_neu2;
      streckencounter++;
-     zeitcounter2 ++;
-
+    // zeitcounter2 ++;
+Serial.println(zeit2);
+     zeituebergabe2=zeit2;
      
-     
-     if ( zeitcounter2 >=10) { 
-       zeituebergabe2 = zeitglatt2 /  zeitcounter2 ;
-       zeitcounter2 = 0 ;
-       zeitglatt2 = 0;
-       zeitglatt_neu2 = 0;
-       }
+    // if ( zeitcounter2 >=10) { 
+      // zeituebergabe2 = zeitglatt2 /  zeitcounter2 ;
+       //zeitcounter2 = 0 ;
+       //zeitglatt2 = 0;
+      // zeitglatt_neu2 = 0;
+    //   }
         
        } 
         
