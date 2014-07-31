@@ -43,7 +43,7 @@ int counter2 = 0;
 int zeitcounter2 = 0;
 unsigned long zeitglatt2=0;
 unsigned long zeitglatt_neu2 = 0;
-unsigned long zeituebergabe2 = 15000;
+unsigned long zeituebergabe2 = 36450;
 float Abrollumfang = 2.472; // Abrollumfang hinterreifen
 int streckencounter=0; // anzahl der impulse der strecke 
 // MAP Sensor
@@ -82,7 +82,7 @@ int start = 0;
 // aufzeichnug
 char myChar = 10; // LF für datenstrom
 int sampl = 5; // anzahl samles vor dem Speichern
-boolean StartAufzeichung = false ; // steuerung der Aufzeichnung
+boolean StartAufzeichung = true; //false ; // steuerung der Aufzeichnung
 
 
 void setup()
@@ -231,7 +231,7 @@ if (start == 2) {
   dataString += ";";
   dataString += String(Kardanwellenrehzahl); // Kardanwellenrehzahl
   dataString += ";";
-  dataString += String(3.6/(zeituebergabe2/1000000)*Abrollumfang/8); // Geschwindigkeit
+  dataString += String(3600/(zeituebergabe2/1000)*Abrollumfang/8); // Geschwindigkeit
   dataString += ";";
   dataString += String(Abrollumfang/8*streckencounter); // Strecke
   dataString += ";";
@@ -239,7 +239,7 @@ if (start == 2) {
   dataString += ";";
   dataString += String(digitalRead(Lachgas)*1000); // Lachgas
   dataString += ";";
-  dataString += String((18.75*((digitalRead(MAP)*0.0049)))-24.075); // MAP in PSI
+  dataString += String((18.75*((analogRead(MAP)*0.0049)))-24.075); // MAP in PSI
   dataString += ";";
   #ifdef X_Beschleunigung
   dataString += String(fXg); // Beschleunigung X
