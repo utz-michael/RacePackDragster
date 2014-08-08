@@ -38,7 +38,7 @@ unsigned long zeituebergabe = 15000;
 // Umdrehung Kardanwelle
 int Kardanwellenrehzahl = 0;
 unsigned long last2=0;
-unsigned long zeit2=30000;
+unsigned long zeit2=1000000;
 int counter2 = 0;
 int zeitcounter2 = 0;
 unsigned long zeitglatt2=0;
@@ -315,7 +315,7 @@ void Kardanwelle(){
       unsigned long m2 = micros();                 // Microsekundenzähler auslesen
       unsigned long v2 = m2 - last2;                 // Differenz zum letzten Durchlauf berechnen
   
-      if (v2 > 4000  ) {            // ignorieren wenn <= 4 ms (Kontaktpreller)
+      if (v2 > 4000  && v2 < zeit2 * 3  ) {            // ignorieren wenn <= 4 ms (Kontaktpreller)
       zeit2 = v2;                                // Wert in dauer übernehmen
       last2 = m2;         // und wieder den letzten Wert merken
      //zeitglatt_neu2 = zeitglatt2 + zeit2;
