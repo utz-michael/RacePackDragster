@@ -21,6 +21,12 @@ unsigned long ZeitOffset = 0;
 // Thermoelement 
 int Zylinder[8];
 
+// Bordspannung messung
+
+int BordSpannung = 0;
+float BordspannungVolt = 0 ;
+int BordspannungPIN = 3;
+
 // FuelPressure Sensor
 
 
@@ -127,7 +133,7 @@ void setup()
  
 
 // Überschrift schreiben
-String dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+String dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -172,14 +178,16 @@ FuelMain = analogRead(FuelMainPIN);
 FuelCarburtor = analogRead(FuelCarburtorPIN);
 FuelNOS = analogRead(FuelNOSPIN);
 MAP = analogRead(MAPPIN);
-
+BordSpannung = analogRead(BordspannungPIN);
 
 FuelMainPSI = (FuelMain - FuelMainCal)/7.14;
 FuelCarburtorPSI = (FuelCarburtor - FuelCarburtorCal)/7.14;
 FuelNOSPSI = (FuelNOS - FuelNOSCal)/7.14;
 MAPPSI = (MAP - MAPCal)/10.87;
+BordspannungVolt = BordSpannung * 0.0049;
 
-char buffer[20];
+
+char buffer[30];
 String FuelMain_PSI = dtostrf(FuelMainPSI, 4, 1, buffer);
 
 String FuelCarburtor_PSI = dtostrf(FuelCarburtorPSI, 4, 1, buffer);
@@ -187,6 +195,8 @@ String FuelCarburtor_PSI = dtostrf(FuelCarburtorPSI, 4, 1, buffer);
 String FuelNOS_PSI = dtostrf(FuelNOSPSI, 4, 1, buffer);
 
 String MAP_PSI = dtostrf(MAPPSI, 6, 2, buffer);
+
+String Bordspannung_Volt = dtostrf(BordspannungVolt, 5, 2, buffer);
 
 
 
@@ -252,6 +262,8 @@ if (start == 2) {
   dataString += String(FuelCarburtor_PSI); // FuelCarburator
   dataString += ";";
   dataString += String(FuelNOS_PSI); // FuelNOS
+  dataString += ";";
+  dataString += String(Bordspannung_Volt); // Bordspannung
   dataString += ";";
     for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
     int sensor = Zylinder[thermoCS];
