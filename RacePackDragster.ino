@@ -21,6 +21,28 @@ unsigned long ZeitOffset = 0;
 // Thermoelement 
 int Zylinder[8];
 
+// FuelPressure Sensor
+
+
+float FuelMainCal = 0; 
+float FuelCarburtorCal = 0; 
+float FuelNOSCal = 0; 
+
+float FuelMainPSI = 0; 
+float FuelCarburtorPSI = 0; 
+float FuelNOSPSI = 0; 
+
+int FuelMain = 0; 
+int FuelCarburtor = 0; 
+int FuelNOS = 0; 
+
+int FuelMainPIN = 0; 
+int FuelCarburtorPIN = 1; 
+int FuelNOSPIN = 2;
+
+
+
+
 
 // Umdrehung Motor
 int Motordrehzahl = 0;
@@ -73,6 +95,23 @@ void setup()
  
   pinMode(Lachgas, INPUT);  // Digital pin als ausgang definieren
   pinMode(Transbrake, INPUT); // Digital pin als ausgang definieren
+  
+  // Kallibrierung Druck Sensoren
+  
+  for(int x =0 ; x < 1000 ; x++){
+ 
+ FuelMainCal = FuelMainCal + analogRead(FuelMainPIN); 
+ FuelCarburtorCal = FuelCarburtorCal + analogRead(FuelCarburtorPIN); 
+ FuelNOSCal = FuelNOSCal + analogRead(FuelNOSPIN); 
+
+}
+
+  
+ FuelMainCal = (int)((FuelMainCal /1000)+ .5);
+ FuelCarburtorCal = (int)((FuelCarburtorCal /1000)+ .5); 
+ FuelNOSCal = (int)((FuelNOSCal /1000)+ .5); 
+  
+  
  
   Serial.print("Initializing SD card...");
  
@@ -124,6 +163,29 @@ for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
   #endif   
   }
 #endif  
+
+// Drucksensoren auslesen und berechnen
+
+FuelMain = analogRead(FuelMainPIN);
+FuelCarburtor = analogRead(FuelCarburtorPIN);
+FuelNOS = analogRead(FuelNOSPIN);
+
+
+
+FuelMainPSI = (FuelMain - FuelMainCal)/7.14;
+FuelCarburtorPSI = (FuelCarburtor - FuelCarburtorCal)/7.14;
+FuelNOSPSI = (FuelNOS - FuelNOSCal)/7.14;
+
+char buffer[20];
+String FuelMain_PSI = dtostrf(FuelMainPSI, 4, 1, buffer);
+
+String FuelCarburtor_PSI = dtostrf(FuelCarburtorPSI, 4, 1, buffer);
+
+String FuelNOS_PSI = dtostrf(FuelNOSPSI, 4, 1, buffer);
+
+
+
+
 
 // Drehzahlen berechnen
 
@@ -180,11 +242,11 @@ if (start == 2) {
   dataString += ";";
   dataString += String((18.75*((analogRead(MAP)*0.0049)))-24.075); // MAP in PSI
   dataString += ";";
-  dataString += String(analogRead(MAP)); // FuelMain
+  dataString += String(FuelMain_PSI); // FuelMain
   dataString += ";";
-  dataString += String(analogRead(MAP)); // FuelCarburator
+  dataString += String(FuelCarburtor_PSI); // FuelCarburator
   dataString += ";";
-  dataString += String(analogRead(MAP)); // FuelNOS
+  dataString += String(FuelNOS_PSI); // FuelNOS
   dataString += ";";
     for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
     int sensor = Zylinder[thermoCS];

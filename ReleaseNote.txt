@@ -5,6 +5,7 @@ Anderungen zu 1.0
 - Beschleunigungssensoren deaktivieret
 - Drucksensoren für Fuel eingebaut
 - MAP kalibriert
+- Sannungsmessung
 - Start der Aufzeichnung durch Transbrake und drehzahl höher 3000 u/min
 
 
