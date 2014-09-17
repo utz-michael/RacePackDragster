@@ -1,0 +1,28 @@
+Release 2.0
+
+Anderungen zu 1.0
+
+- Beschleunigungssensoren deaktivieret
+- Drucksensoren für Fuel eingebaut
+- MAP kalibriert
+- Start der Aufzeichnung durch Transbrake und drehzahl höher 3000 u/min
+
+
+
+
+
+Release 1.0
+
+Datenaufzeichnung mit folgenden Sensoren
+
+- Temperatur Zylinder 1-8
+- Transbrake
+- MAP (ohne Kalibrierung)
+- Beschleunigung xyz
+- Drehzahl Motor
+- Drehzahl Achse
+- Lachgas aktivierung
+- Geschwindigkeit
+- Strecke
+
+Start der Aufzeichnung durch starten des Motors
