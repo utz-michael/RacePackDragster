@@ -12,10 +12,7 @@
 #include <SdFat.h>
 //#define DEBUG   //Debug einschalten verlangsammt 110ms
 #define Temperatur
-#define X_Beschleunigung
-#define Y_Beschleunigung
-#define Z_Beschleunigung
-#define G_Empfindlichkeit // muss aktiv sein da gelötet Beschleunigungssensor auf 6G empfindlichkeit einstellen m
+
 SdFat sd;
 SdFile myFile;
 
@@ -50,34 +47,14 @@ int streckencounter=0; // anzahl der impulse der strecke
 
 int MAP = 3;
 
-// Beschleunigungssensor
 
-
-float BeschleunigungsKonstante = 0.0061224;
-
-int analogPinX = 0;
-int analogPinY = 1;
-int analogPinZ = 2;
-int kalibrierungX = 0;
-int kalibrierungY = 0;
-int kalibrierungZ = 0;
-int i=0;
-//const float alpha = 0.5;
-
-const float alpha = 0.1;
-float X = 0;
-float Y = 0;
-float Z = 0;
-double fXg = 0;
-double fYg = 0;
-double fZg = 0;
 
 
 
 // Digital pind für Transbrake und Lachgas
 int Transbrake = 25;
 int Lachgas = 23;
-int empfindlichkeit = 31; // nicht aktiv da 3.3 V gelötet
+
 int start = 0;
 // aufzeichnug
 char myChar = 10; // LF für datenstrom
@@ -96,7 +73,7 @@ void setup()
  
   pinMode(Lachgas, INPUT);  // Digital pin als ausgang definieren
   pinMode(Transbrake, INPUT); // Digital pin als ausgang definieren
-  pinMode(empfindlichkeit, OUTPUT); //  Digital pin als ausgang definieren
+ 
   Serial.print("Initializing SD card...");
  
   // Initialize SdFat or print a detailed error message and halt
@@ -104,35 +81,12 @@ void setup()
   // change to SPI_FULL_SPEED for more performance.
   if (!sd.begin(chipSelect, SPI_FULL_SPEED)) sd.initErrorHalt();
  
- digitalWrite(empfindlichkeit, LOW);   // Beschleunigungssensor auf 1.5G einstellen 
 
-#ifdef G_Empfindlichkeit
-BeschleunigungsKonstante = 0.02381; // fakrot für 6G
-digitalWrite(empfindlichkeit, HIGH);   // Beschleunigungssensor auf 6G einstellen 
-#endif 
 
- // Kallibrierung Beschleunigungssensor
-    delay (1000);
-    for ( i=0; i < 50; i++){
-        kalibrierungX = kalibrierungX + analogRead(analogPinX);
-        kalibrierungY = kalibrierungY + analogRead(analogPinY);
-        kalibrierungZ = kalibrierungZ + analogRead(analogPinZ);
-      }
-      kalibrierungX = kalibrierungX / i;
-      kalibrierungY = kalibrierungY / i;
-      kalibrierungZ = kalibrierungZ / i;
-
-        Serial.print("Kalibrierung X: ");
-        Serial.println(kalibrierungX);
-        Serial.print("Kalibrierung Y: ");
-        Serial.println(kalibrierungY);
-        Serial.print("Kalibrierung Z: ");
-        Serial.println(kalibrierungZ);
-  delay (1000);
-
+ 
 
 // Überschrift schreiben
-String dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;Lachgas;MAP;BeschleunigungX;BeschleunigungY;BeschleunigungZ;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+String dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;Lachgas;MAP;FuelMain;FuelCarburator;FuelNOS;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -185,21 +139,6 @@ Kardanwellenrehzahl = 36450000/zeituebergabe2;  // auf Annahme am Hinterrad mit 
 #endif  
 
 
-#ifdef X_Beschleunigung
-X = (analogRead(analogPinX)-kalibrierungX)*BeschleunigungsKonstante;
-fXg = X * alpha + (fXg * (1.0 - alpha)); // glättung mit tiefpass
-
-#endif
-#ifdef Y_Beschleunigung
-Y = (analogRead(analogPinY)-kalibrierungY)*BeschleunigungsKonstante;
-fYg = Y * alpha + (fYg * (1.0 - alpha));
-
-#endif
-#ifdef Z_Beschleunigung
-Z = (analogRead(analogPinZ)-kalibrierungZ)*BeschleunigungsKonstante;
-fZg = Z * alpha + (fZg * (1.0 - alpha));
-
-#endif
 
 
 #ifdef DEBUG  
@@ -241,19 +180,13 @@ if (start == 2) {
   dataString += ";";
   dataString += String((18.75*((analogRead(MAP)*0.0049)))-24.075); // MAP in PSI
   dataString += ";";
-  #ifdef X_Beschleunigung
-  dataString += String(fXg); // Beschleunigung X
+  dataString += String(analogRead(MAP)); // FuelMain
   dataString += ";";
-  #endif
-  #ifdef Y_Beschleunigung
-  dataString += String(fYg); // Beschleunigung X
+  dataString += String(analogRead(MAP)); // FuelCarburator
   dataString += ";";
-  #endif
-  #ifdef Z_Beschleunigung
-  dataString += String(fZg); // Beschleunigung X
+  dataString += String(analogRead(MAP)); // FuelNOS
   dataString += ";";
-  #endif
-  for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
+    for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
     int sensor = Zylinder[thermoCS];
     dataString += String(sensor);
     if (thermoCS < 7) {
@@ -274,7 +207,11 @@ dataString += myChar; // cr linefeed anhängen
     // print to the serial port too:
 #ifdef DEBUG    
     Serial.println(dataString);
-#endif     
+#endif  
+
+if ( Motordrehzahl > 3000 && Transbrake == 1) {StartAufzeichung = true; }
+
+
 }
 
 
@@ -303,7 +240,7 @@ void Motor(){
        zeitglatt_neu = 0;
        }
        
-     StartAufzeichung = true;  // beim ersten drehen des motors aufzeichung starten  
+     //StartAufzeichung = true;  // beim ersten drehen des motors aufzeichung starten  
       }  
       
       attachInterrupt(0, Motor, FALLING );   
