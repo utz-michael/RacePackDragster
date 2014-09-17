@@ -67,10 +67,10 @@ float Abrollumfang = 2.472; // Abrollumfang hinterreifen
 int streckencounter=0; // anzahl der impulse der strecke 
 // MAP Sensor
 
-int MAP = 3;
-
-
-
+int MAPPIN = 3;
+float MAPCal = 0;
+int MAP = 0;
+float MAPPSI = 0;
 
 
 // Digital pind für Transbrake und Lachgas
@@ -103,13 +103,14 @@ void setup()
  FuelMainCal = FuelMainCal + analogRead(FuelMainPIN); 
  FuelCarburtorCal = FuelCarburtorCal + analogRead(FuelCarburtorPIN); 
  FuelNOSCal = FuelNOSCal + analogRead(FuelNOSPIN); 
-
+ MAPCal = MAPCal + analogRead(MAPPIN); 
 }
 
   
  FuelMainCal = (int)((FuelMainCal /1000)+ .5);
  FuelCarburtorCal = (int)((FuelCarburtorCal /1000)+ .5); 
  FuelNOSCal = (int)((FuelNOSCal /1000)+ .5); 
+ MAPCal = (int)((MAPCal /1000)+ .5);
   
   
  
@@ -169,12 +170,13 @@ for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
 FuelMain = analogRead(FuelMainPIN);
 FuelCarburtor = analogRead(FuelCarburtorPIN);
 FuelNOS = analogRead(FuelNOSPIN);
-
+MAP = analogRead(MAPPIN);
 
 
 FuelMainPSI = (FuelMain - FuelMainCal)/7.14;
 FuelCarburtorPSI = (FuelCarburtor - FuelCarburtorCal)/7.14;
 FuelNOSPSI = (FuelNOS - FuelNOSCal)/7.14;
+MAPPSI = (MAP - MAPCal)/10.87;
 
 char buffer[20];
 String FuelMain_PSI = dtostrf(FuelMainPSI, 4, 1, buffer);
@@ -183,7 +185,7 @@ String FuelCarburtor_PSI = dtostrf(FuelCarburtorPSI, 4, 1, buffer);
 
 String FuelNOS_PSI = dtostrf(FuelNOSPSI, 4, 1, buffer);
 
-
+String MAP_PSI = dtostrf(MAPPSI, 6, 2, buffer);
 
 
 
@@ -240,7 +242,7 @@ if (start == 2) {
   dataString += ";";
   dataString += String(digitalRead(Lachgas)*1000); // Lachgas
   dataString += ";";
-  dataString += String((18.75*((analogRead(MAP)*0.0049)))-24.075); // MAP in PSI
+  dataString += String(MAP_PSI); // MAP in PSI
   dataString += ";";
   dataString += String(FuelMain_PSI); // FuelMain
   dataString += ";";
