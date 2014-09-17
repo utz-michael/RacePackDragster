@@ -75,7 +75,8 @@ float MAPPSI = 0;
 
 // Digital pind für Transbrake und Lachgas
 int Transbrake = 25;
-int Lachgas = 23;
+int LachgasFogger = 23;
+int LachgasPlate = 21;
 
 int start = 0;
 // aufzeichnug
@@ -92,9 +93,9 @@ void setup()
 
   // wait for MAX chip to stabilize
   delay(500);
- 
-  pinMode(Lachgas, INPUT);  // Digital pin als ausgang definieren
-  pinMode(Transbrake, INPUT); // Digital pin als ausgang definieren
+  pinMode(LachgasPlate, INPUT);  // Digital pin als Eingang definieren
+  pinMode(LachgasFogger, INPUT);  // Digital pin als Eingang definieren
+  pinMode(Transbrake, INPUT); // Digital pin als Eingang definieren
   
   // Kallibrierung Druck Sensoren
   
@@ -126,7 +127,7 @@ void setup()
  
 
 // Überschrift schreiben
-String dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;Lachgas;MAP;FuelMain;FuelCarburator;FuelNOS;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+String dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -240,7 +241,9 @@ if (start == 2) {
   dataString += ";";
   dataString += String(digitalRead(Transbrake)*1000); // Transbrak
   dataString += ";";
-  dataString += String(digitalRead(Lachgas)*1000); // Lachgas
+  dataString += String(digitalRead(LachgasFogger)*1000); // LachgasFogger
+  dataString += ";";
+  dataString += String(digitalRead(LachgasPlate)*1000); // LachgasPlate
   dataString += ";";
   dataString += String(MAP_PSI); // MAP in PSI
   dataString += ";";
