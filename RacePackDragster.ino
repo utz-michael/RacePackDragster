@@ -20,7 +20,7 @@ const int chipSelect = 10; // used as the CS pin, the hardware CS pin (10 on mos
 unsigned long ZeitOffset = 0;
 // Thermoelement 
 int Zylinder[8];
-
+int Zylinder_summe[8];
 // Bordspannung messung
 
 int BordSpannung = 0;
@@ -157,11 +157,12 @@ for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
   
 #ifdef Temperatur
 
-
+//Glättung Temperatur
+for (int g = 0; g<=9; g++){
    // basic readout test, just print the current temp
    for (int thermoCS=0; thermoCS <= 7; thermoCS++){
   Zylinder[thermoCS] = analogRead(thermoCS+8) ;
-  
+  Zylinder_summe[thermoCS] = Zylinder_summe[thermoCS] +  Zylinder[thermoCS];
   
   #ifdef DEBUG  
    Serial.print("Zylinder ");
@@ -171,6 +172,15 @@ for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
   #endif   
   }
 #endif  
+}
+
+ for (int thermoCS=0; thermoCS <= 7; thermoCS++){
+   
+   Zylinder_summe[thermoCS] = Zylinder_summe[thermoCS] / 10 ;
+   }
+
+
+
 
 // Drucksensoren auslesen und berechnen
 
@@ -266,7 +276,7 @@ if (start == 2) {
   dataString += String(Bordspannung_Volt); // Bordspannung
   dataString += ";";
     for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
-    float  sensor = Zylinder[thermoCS] * 1.8 + 32  ;
+    float  sensor = Zylinder_summe[thermoCS] * 1.8 + 32  ;
     String sensor_farenheit = dtostrf(sensor, 5, 0, buffer);
     dataString += String(sensor_farenheit);
     if (thermoCS < 7) {
