@@ -8,6 +8,7 @@ Anderungen zu 1.0
 - Sannungsmessung
 - Start der Aufzeichnung durch Transbrake und drehzahl höher 3000 u/min
 - Zweite Stufe Lachgas
+- temperatur in fahrenheit
 
 
 

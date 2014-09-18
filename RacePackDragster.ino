@@ -184,7 +184,7 @@ FuelMainPSI = (FuelMain - FuelMainCal)/7.14;
 FuelCarburtorPSI = (FuelCarburtor - FuelCarburtorCal)/7.14;
 FuelNOSPSI = (FuelNOS - FuelNOSCal)/7.14;
 MAPPSI = (MAP - MAPCal)/10.87;
-BordspannungVolt = BordSpannung * 0.0049;
+BordspannungVolt = BordSpannung * 3.0000 * 0.0049;
 
 
 char buffer[30];
@@ -266,8 +266,9 @@ if (start == 2) {
   dataString += String(Bordspannung_Volt); // Bordspannung
   dataString += ";";
     for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
-    int sensor = Zylinder[thermoCS];
-    dataString += String(sensor);
+    float  sensor = Zylinder[thermoCS] * 1.8 + 32  ;
+    String sensor_farenheit = dtostrf(sensor, 5, 0, buffer);
+    dataString += String(sensor_farenheit);
     if (thermoCS < 7) {
       dataString += ";"; 
     }
