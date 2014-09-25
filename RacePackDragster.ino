@@ -127,13 +127,22 @@ void setup()
   // Use half speed like the native library.
   // change to SPI_FULL_SPEED for more performance.
   if (!sd.begin(chipSelect, SPI_FULL_SPEED)) sd.initErrorHalt();
+  
+// datentyp für csv festlegen notwendig füe LiveGraph.2.0.software
+String dataString = "##;##";
+  // open the file for write at end like the Native SD library
+  if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
+    sd.errorHalt("opening datalog.csv for write failed");
+  }
+    myFile.println(dataString);
+    myFile.close();
  
 
 
  
 
 // Überschrift schreiben
-String dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+ dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
