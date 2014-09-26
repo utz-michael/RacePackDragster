@@ -9,10 +9,11 @@ Anderungen zu 1.0
 - Start der Aufzeichnung durch Transbrake und drehzahl höher 3000 u/min
 - Zweite Stufe Lachgas
 - temperatur in fahrenheit
+- Lambda Messung 
 
 - netzfilter
 - Datenleitung filter
-- Geschwidigkeitsberechnung stimmt nicht zu grob float und dezimal?
+
 
 
 

@@ -27,6 +27,15 @@ int BordSpannung = 0;
 float BordspannungVolt = 0 ;
 int BordspannungPIN = 3;
 
+// Lambda messung
+
+int LambdaAnalog = 0;
+float LambdaRaw = 0 ;
+int LambdaPIN = 4;
+
+
+
+
 // FuelPressure Sensor
 
 
@@ -142,7 +151,7 @@ String dataString = "##;##";
  
 
 // Überschrift schreiben
- dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+ dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Lambda;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -206,7 +215,7 @@ MAPPSI = (MAP - MAPCal)/10.87;
 BordspannungVolt = BordSpannung * 3.0000 * 0.0049;
 
 
-char buffer[30];
+char buffer[40];
 String FuelMain_PSI = dtostrf(FuelMainPSI, 4, 1, buffer);
 
 String FuelCarburtor_PSI = dtostrf(FuelCarburtorPSI, 4, 1, buffer);
@@ -217,7 +226,11 @@ String MAP_PSI = dtostrf(MAPPSI, 6, 2, buffer);
 
 String Bordspannung_Volt = dtostrf(BordspannungVolt, 5, 2, buffer);
 
+//Lambda auslesen
 
+LambdaAnalog = analogRead (LambdaPIN);
+LambdaRaw = 0.12 * LambdaAnalog *0.0049 + 0.7;
+String Lambda = dtostrf(LambdaRaw, 4, 2, buffer);
 
 // Drehzahlen berechnen
 
@@ -284,6 +297,8 @@ if (start == 2) {
   dataString += String(FuelNOS_PSI); // FuelNOS
   dataString += ";";
   dataString += String(Bordspannung_Volt); // Bordspannung
+  dataString += ";";
+  dataString += String(Lambda); // Lambda
   dataString += ";";
     for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
     float  sensor = Zylinder_summe[thermoCS] * 1.8 + 32  ;
