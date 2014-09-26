@@ -265,7 +265,7 @@ if (start == 2) {
   dataString += ";";
   dataString += String(Kardanwellenrehzahl); // Kardanwellenrehzahl
   dataString += ";";
-  dataString += String(3600/(zeituebergabe2/1000)*Abrollumfang/8); // Geschwindigkeit
+  dataString += String(3600.0/(zeituebergabe2/1000.0)*Abrollumfang/8.0 ); // Geschwindigkeit
   dataString += ";";
   dataString += String(Abrollumfang/8*streckencounter); // Strecke
   dataString += ";";
