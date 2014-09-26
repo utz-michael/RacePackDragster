@@ -10,8 +10,9 @@ Anderungen zu 1.0
 - Zweite Stufe Lachgas
 - temperatur in fahrenheit
 
-- netzfilet
+- netzfilter
 - Datenleitung filter
+- Geschwidigkeitsberechnung stimmt nicht zu grob float und dezimal?
 
 
 

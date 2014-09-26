@@ -244,6 +244,7 @@ Kardanwellenrehzahl = 36450000/zeituebergabe2;  // auf Annahme am Hinterrad mit 
   Serial.println(Z);
 #endif
 
+/*
  // Zeit und Streckencounter auf null setzen wenn Transbrake gelöst wird
  
 if (digitalRead(Transbrake)== 1) { start = 1;}
@@ -253,7 +254,7 @@ if (start == 2) {
     ZeitOffset = millis(); 
   streckencounter = 0;
 } 
-  
+*/  
   // make a string for assembling the data to log:
   
   // read  sensors and append to the string:
@@ -308,7 +309,14 @@ dataString += myChar; // cr linefeed anhängen
     Serial.println(dataString);
 #endif  
 
-if ( Motordrehzahl > 3000 && Transbrake == 1) {StartAufzeichung = true; }
+//start der aufzeichnung und zurücksetzen der zeit auf null
+
+if ( Motordrehzahl > 3000 && Transbrake == 1) {
+ ZeitOffset = millis(); 
+ streckencounter = 0;
+
+StartAufzeichung = true;
+}
 
 
 }
