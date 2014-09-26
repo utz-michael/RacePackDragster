@@ -25,13 +25,13 @@ int Zylinder_summe[8];
 
 int BordSpannung = 0;
 float BordspannungVolt = 0 ;
-int BordspannungPIN = 3;
+int BordspannungPIN = 4;
 
 // Lambda messung
 
 int LambdaAnalog = 0;
 float LambdaRaw = 0 ;
-int LambdaPIN = 4;
+int LambdaPIN = 5;
 
 
 
