@@ -163,7 +163,7 @@ String dataString = "##;##";
 ZeitOffset = millis(); // offset des timers festlegen
 
  attachInterrupt(0, Motor, FALLING);
- attachInterrupt(1, Kardanwelle, LOW);
+ attachInterrupt(1, Kardanwelle, FALLING);
  
 }
 
@@ -379,19 +379,19 @@ void Kardanwelle(){
       if (v2 > 4000    ) {            // ignorieren wenn <= 4 ms (Kontaktpreller)
       zeit2 = v2;                                // Wert in dauer übernehmen
       last2 = m2;         // und wieder den letzten Wert merken
-     //zeitglatt_neu2 = zeitglatt2 + zeit2;
-     //zeitglatt2 = zeitglatt_neu2;
+     zeitglatt_neu2 = zeitglatt2 + zeit2;
+     zeitglatt2 = zeitglatt_neu2;
      streckencounter++;
-  //   zeitcounter2 ++;
+    zeitcounter2 ++;
 //Serial.println(zeit2);
-     zeituebergabe2=zeit2;
+    // zeituebergabe2=zeit2;
      
-  //  if ( zeitcounter2 >=10) { 
-   //    zeituebergabe2 = zeitglatt2 /  zeitcounter2 ;
-   //   zeitcounter2 = 0 ;
-   //    zeitglatt2 = 0;
-    //   zeitglatt_neu2 = 0;
-     //  }
+   if ( zeitcounter2 >=10) { 
+      zeituebergabe2 = zeitglatt2 /  zeitcounter2 ;
+     zeitcounter2 = 0 ;
+      zeitglatt2 = 0;
+       zeitglatt_neu2 = 0;
+       }
         
        } 
         
