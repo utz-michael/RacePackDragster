@@ -90,14 +90,14 @@ float MAPPSI = 0;
 
 // Digital pind für Transbrake und Lachgas
 int Transbrake = 25;
-int LachgasFogger = 23;
-int LachgasPlate = 21;
+int LachgasFogger = 29;
+int LachgasPlate = 27;
 
 int start = 0;
 // aufzeichnug
 char myChar = 10; // LF für datenstrom
 int sampl = 5; // anzahl samles vor dem Speichern
-boolean StartAufzeichung = false; //false ; // steuerung der Aufzeichnung
+boolean StartAufzeichung = true; //false ; // steuerung der Aufzeichnung
 
 
 void setup()
@@ -176,26 +176,27 @@ for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
 #ifdef Temperatur
 
 //Glättung Temperatur
-for (int g = 0; g<=9; g++){
+//for (int g = 0; g<=9; g++){
    // basic readout test, just print the current temp
    for (int thermoCS=0; thermoCS <= 7; thermoCS++){
   Zylinder[thermoCS] = analogRead(thermoCS+8) ;
-  Zylinder_summe[thermoCS] = Zylinder_summe[thermoCS] +  Zylinder[thermoCS];
+//  Zylinder_summe[thermoCS] = Zylinder_summe[thermoCS] +  Zylinder[thermoCS];
   
-  #ifdef DEBUG  
+/*  #ifdef DEBUG  
    Serial.print("Zylinder ");
    Serial.print(thermoCS+1);
    Serial.print("C = "); 
    Serial.println(Zylinder[thermoCS]);
-  #endif   
+  #endif 
+*/  
   }
 #endif  
-}
+//}
 
- for (int thermoCS=0; thermoCS <= 7; thermoCS++){
+// for (int thermoCS=0; thermoCS <= 7; thermoCS++){
    
-   Zylinder_summe[thermoCS] = Zylinder_summe[thermoCS] / 10 ;
-   }
+//   Zylinder_summe[thermoCS] = Zylinder_summe[thermoCS] / 10 ;
+//   }
 
 
 
@@ -249,12 +250,12 @@ Kardanwellenrehzahl = 36450000/zeituebergabe2;  // auf Annahme am Hinterrad mit 
 
 
 #ifdef DEBUG  
-  Serial.print("X: ");
-  Serial.println(X);
-  Serial.print("Y: ");
-  Serial.println(Y);
-  Serial.print("Z: ");
-  Serial.println(Z);
+  Serial.print("fogger");
+  Serial.println(digitalRead(LachgasFogger));
+  Serial.print("Transbrake");
+  Serial.println(digitalRead(Transbrake));
+  Serial.print("Lachgas Platte");
+  Serial.println(digitalRead(LachgasPlate));
 #endif
 
 /*
@@ -301,7 +302,8 @@ if (start == 2) {
   dataString += String(Lambda); // Lambda
   dataString += ";";
     for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
-    float  sensor = Zylinder_summe[thermoCS] * 1.8 + 32  ;
+ //   float  sensor = Zylinder_summe[thermoCS] * 1.8 + 32  ;
+     float  sensor = Zylinder[thermoCS] * 1.8 + 32  ;
     String sensor_farenheit = dtostrf(sensor, 5, 0, buffer);
     dataString += String(sensor_farenheit);
     if (thermoCS < 7) {
@@ -321,7 +323,7 @@ dataString += myChar; // cr linefeed anhängen
   }
     // print to the serial port too:
 #ifdef DEBUG    
-    Serial.println(dataString);
+  //  Serial.println(dataString);
 #endif  
 
 //start der aufzeichnung und zurücksetzen der zeit auf null
@@ -393,7 +395,7 @@ void Kardanwelle(){
         
        } 
         
-      attachInterrupt(1, Kardanwelle, LOW ); 
+      attachInterrupt(1, Kardanwelle, FALLING ); 
        // Interrupt wieder einschalten.
    }  
 
