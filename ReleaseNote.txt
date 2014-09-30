@@ -13,7 +13,7 @@ Anderungen zu 1.0
 - netzfilter
 - Datenleitung filter
 
-
+- drehzal pin auf input und auf high stellen
 
 
 
