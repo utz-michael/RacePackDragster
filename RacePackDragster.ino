@@ -79,7 +79,7 @@ int zeitcounter2 = 0;
 unsigned long zeitglatt2=0;
 unsigned long zeitglatt_neu2 = 0;
 unsigned long zeituebergabe2 = 36450;
-float Abrollumfang = 2.472; // Abrollumfang hinterreifen
+float Abrollumfang = 2.553; // Abrollumfang hinterreifen
 int streckencounter=0; // anzahl der impulse der strecke 
 int KardanwellePIN = 3;
 // MAP Sensor
@@ -288,11 +288,11 @@ if (start == 2) {
   dataString += ";";
   dataString += String(Abrollumfang/8*streckencounter); // Strecke
   dataString += ";";
-  dataString += String(digitalRead(Transbrake)*1000); // Transbrak
+  dataString += String(digitalRead(Transbrake)); // Transbrak
   dataString += ";";
-  dataString += String(digitalRead(LachgasFogger)*1000); // LachgasFogger
+  dataString += String(digitalRead(LachgasFogger)); // LachgasFogger
   dataString += ";";
-  dataString += String(digitalRead(LachgasPlate)*1000); // LachgasPlate
+  dataString += String(digitalRead(LachgasPlate)); // LachgasPlate
   dataString += ";";
   dataString += String(MAP_PSI); // MAP in PSI
   dataString += ";";
@@ -362,7 +362,7 @@ void Motor(){
 
      
      
-     if ( zeitcounter >=10) { 
+     if ( zeitcounter >=3) { 
        zeituebergabe = zeitglatt /  zeitcounter ;
        zeitcounter = 0 ;
        zeitglatt = 0;
@@ -391,7 +391,7 @@ void Kardanwelle(){
 //Serial.println(zeit2);
     // zeituebergabe2=zeit2;
      
-   if ( zeitcounter2 >=10) { 
+   if ( zeitcounter2 >=3) { 
       zeituebergabe2 = zeitglatt2 /  zeitcounter2 ;
      zeitcounter2 = 0 ;
       zeitglatt2 = 0;
