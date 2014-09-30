@@ -68,6 +68,7 @@ int zeitcounter = 0;
 unsigned long zeitglatt=0;
 unsigned long zeitglatt_neu = 0;
 unsigned long zeituebergabe = 15000;
+int MotorPIN = 2;
 
 // Umdrehung Kardanwelle
 int Kardanwellenrehzahl = 0;
@@ -80,6 +81,7 @@ unsigned long zeitglatt_neu2 = 0;
 unsigned long zeituebergabe2 = 36450;
 float Abrollumfang = 2.472; // Abrollumfang hinterreifen
 int streckencounter=0; // anzahl der impulse der strecke 
+int KardanwellePIN = 3;
 // MAP Sensor
 
 int MAPPIN = 3;
@@ -111,7 +113,10 @@ void setup()
   pinMode(LachgasPlate, INPUT);  // Digital pin als Eingang definieren
   pinMode(LachgasFogger, INPUT);  // Digital pin als Eingang definieren
   pinMode(Transbrake, INPUT); // Digital pin als Eingang definieren
-  
+   pinMode(MotorPIN, INPUT); // Digital pin als Eingang definieren
+    pinMode(KardanwellePIN, INPUT); // Digital pin als Eingang definieren
+    digitalWrite(KardanwellePIN,HIGH);
+    digitalWrite(MotorPIN,HIGH);
   // Kallibrierung Druck Sensoren
   
   for(int x =0 ; x < 1000 ; x++){
