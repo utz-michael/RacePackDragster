@@ -114,7 +114,10 @@ void setup()
  #endif 
 
  
- if (stream == HIGH ){Serial.begin(115200);}
+ if (stream == HIGH ){
+ Serial.begin(115200);
+ sampl = 1;
+ }
  
 
   // wait for MAX chip to stabilize
@@ -335,7 +338,7 @@ dataString += myChar; // cr linefeed anhängen
 }
 // Datensatz speichern 
 if (stream == HIGH ) {
-  Serial.println(dataString);
+  Serial.print(dataString);
 }
 else
 {
