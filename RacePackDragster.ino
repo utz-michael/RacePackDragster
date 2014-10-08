@@ -15,7 +15,7 @@
 
 SdFat sd;
 SdFile myFile;
-
+byte stream = LOW;
 const int chipSelect = 10; // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
 unsigned long ZeitOffset = 0;
 // Thermoelement 
@@ -104,9 +104,18 @@ boolean StartAufzeichung = true; //false ; // steuerung der Aufzeichnung
 
 void setup()
 {
+   pinMode(30, INPUT); //pin für streaming
+   digitalWrite(30, HIGH);
+   stream = digitalRead (30);   
+  
  // Open serial communications and wait for port to open:
+ #ifdef DEBUG 
   Serial.begin(9600);
-   
+ #endif 
+
+ 
+ if (stream == HIGH ){Serial.begin(115200);}
+ 
 
   // wait for MAX chip to stabilize
   delay(500);
@@ -132,9 +141,15 @@ void setup()
  FuelCarburtorCal = (int)((FuelCarburtorCal /1000)+ .5); 
  FuelNOSCal = (int)((FuelNOSCal /1000)+ .5); 
  MAPCal = (int)((MAPCal /1000)+ .5);
-  
-  
- 
+
+if ( stream == HIGH ){
+  String dataString = "##;##";
+  Serial.println( dataString);
+   dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Lambda;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+  Serial.println(dataString);
+ }
+ else
+ {
   Serial.print("Initializing SD card...");
  
   // Initialize SdFat or print a detailed error message and halt
@@ -143,7 +158,7 @@ void setup()
   if (!sd.begin(chipSelect, SPI_FULL_SPEED)) sd.initErrorHalt();
   
 // datentyp für csv festlegen notwendig füe LiveGraph.2.0.software
-String dataString = "##;##";
+  String dataString = "##;##";
   // open the file for write at end like the Native SD library
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -163,7 +178,7 @@ String dataString = "##;##";
   }
     myFile.println(dataString);
     myFile.close();
-    
+ }   
 
 ZeitOffset = millis(); // offset des timers festlegen
 
@@ -319,12 +334,19 @@ dataString += myChar; // cr linefeed anhängen
 
 }
 // Datensatz speichern 
+if (stream == HIGH ) {
+  Serial.println(dataString);
+}
+else
+{
+
  if (StartAufzeichung == true ){
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
   }
    myFile.print(dataString);
    myFile.close(); 
+  }
   }
     // print to the serial port too:
 #ifdef DEBUG    
