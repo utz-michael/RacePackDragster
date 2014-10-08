@@ -12,9 +12,13 @@ Anderungen zu 1.0
 - Lambda Messung 
 - netzfilter
 - Datenleitung filter
+- drehzal pin auf input und auf high 
+- Streaming der live daten
 
-- drehzal pin auf input und auf high stellen
 
+
+- Streaming schalter einbauen
+- Resettaste einbauen
 
 
 
