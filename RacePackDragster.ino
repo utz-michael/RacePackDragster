@@ -95,18 +95,22 @@ int Transbrake = 25;
 int LachgasFogger = 29;
 int LachgasPlate = 27;
 
-int start = 0;
+int start = HIGH;
 // aufzeichnug
 char myChar = 10; // LF für datenstrom
 int sampl = 5; // anzahl samles vor dem Speichern
-boolean StartAufzeichung = true; //false ; // steuerung der Aufzeichnung
+boolean StartAufzeichung = false; //false ; // steuerung der Aufzeichnung
 
 
 void setup()
 {
    pinMode(30, INPUT); //pin für streaming
    digitalWrite(30, HIGH);
-   stream = digitalRead (30);   
+   stream = digitalRead (30); 
+ 
+  pinMode(32, INPUT); //pin für start aufzeichnung
+  digitalWrite(32, HIGH);
+   
   
  // Open serial communications and wait for port to open:
  #ifdef DEBUG 
@@ -115,8 +119,8 @@ void setup()
 
  
  if (stream == HIGH ){
- Serial.begin(115200);
- sampl = 1;
+ Serial.begin(9600);
+ sampl = 0;
  }
  
 
@@ -357,8 +361,8 @@ else
 #endif  
 
 //start der aufzeichnung und zurücksetzen der zeit auf null
-
-if ( Motordrehzahl > 3000 && Transbrake == 1) {
+start = digitalRead (32);
+if ( start == LOW) {
  ZeitOffset = millis(); 
  streckencounter = 0;
 

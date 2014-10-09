@@ -19,6 +19,7 @@ Anderungen zu 1.0
 
 - Streaming schalter einbauen
 - Resettaste einbauen
+- Aufzeichungs start schalter einbauen
 
 
 
