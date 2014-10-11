@@ -111,13 +111,15 @@ void setup()
   pinMode(33, INPUT); //pin für start aufzeichnung
   digitalWrite(33, HIGH);
    
-  
+   pinMode(35, OUTPUT); //pin für start aufzeichnung
+  digitalWrite(35, LOW);
  // Open serial communications and wait for port to open:
  
 
  
  if (stream == LOW ){
- Serial.begin(9600);
+ //Serial.begin(9600);
+ Serial1.begin(57600);
  sampl = 0;
  }
  else {
@@ -153,7 +155,7 @@ if ( stream == LOW ){
   String dataString = "##;##";
   Serial.println( dataString);
    dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Lambda;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
-  Serial.println(dataString);
+  Serial1.println(dataString);
  }
  else
  {
@@ -342,12 +344,15 @@ dataString += myChar; // cr linefeed anhängen
 }
 // Datensatz speichern 
 if (stream == LOW ) {
-  Serial.print(dataString);
+  digitalWrite(35, HIGH);
+  Serial1.print(dataString);
+  digitalWrite(35, LOW);
 }
 else
 {
 
  if (StartAufzeichung == true ){
+   digitalWrite(35, HIGH);
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
   }
