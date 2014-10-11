@@ -104,25 +104,25 @@ boolean StartAufzeichung = false; //false ; // steuerung der Aufzeichnung
 
 void setup()
 {
-   pinMode(30, INPUT); //pin für streaming
-   digitalWrite(30, HIGH);
-   stream = digitalRead (30); 
+   pinMode(31, INPUT); //pin für streaming
+   digitalWrite(31, HIGH);
+   stream = digitalRead (31); 
  
-  pinMode(32, INPUT); //pin für start aufzeichnung
-  digitalWrite(32, HIGH);
+  pinMode(33, INPUT); //pin für start aufzeichnung
+  digitalWrite(33, HIGH);
    
   
  // Open serial communications and wait for port to open:
- #ifdef DEBUG 
-  Serial.begin(9600);
- #endif 
+ 
 
  
- if (stream == HIGH ){
+ if (stream == LOW ){
  Serial.begin(9600);
  sampl = 0;
  }
- 
+ else {
+   Serial.begin(9600);
+   }
 
   // wait for MAX chip to stabilize
   delay(500);
@@ -149,7 +149,7 @@ void setup()
  FuelNOSCal = (int)((FuelNOSCal /1000)+ .5); 
  MAPCal = (int)((MAPCal /1000)+ .5);
 
-if ( stream == HIGH ){
+if ( stream == LOW ){
   String dataString = "##;##";
   Serial.println( dataString);
    dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Lambda;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
@@ -341,7 +341,7 @@ dataString += myChar; // cr linefeed anhängen
 
 }
 // Datensatz speichern 
-if (stream == HIGH ) {
+if (stream == LOW ) {
   Serial.print(dataString);
 }
 else
@@ -361,7 +361,7 @@ else
 #endif  
 
 //start der aufzeichnung und zurücksetzen der zeit auf null
-start = digitalRead (32);
+start = digitalRead (33);
 if ( start == LOW) {
  ZeitOffset = millis(); 
  streckencounter = 0;
