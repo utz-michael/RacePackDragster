@@ -118,8 +118,8 @@ void setup()
 
  
  if (stream == LOW ){
- //Serial.begin(9600);
- Serial1.begin(57600);
+ Serial.begin(9600);
+
  sampl = 0;
  }
  else {
@@ -155,7 +155,7 @@ if ( stream == LOW ){
   String dataString = "##;##";
   Serial.println( dataString);
    dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Lambda;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
-  Serial1.println(dataString);
+  Serial.println(dataString);
  }
  else
  {
@@ -345,7 +345,7 @@ dataString += myChar; // cr linefeed anhängen
 // Datensatz speichern 
 if (stream == LOW ) {
   digitalWrite(35, HIGH);
-  Serial1.print(dataString);
+  Serial.print(dataString);
   digitalWrite(35, LOW);
 }
 else
