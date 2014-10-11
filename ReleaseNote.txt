@@ -6,7 +6,7 @@ Anderungen zu 1.0
 - Drucksensoren für Fuel eingebaut
 - MAP kalibriert
 - Sannungsmessung
-- Start der Aufzeichnung durch Transbrake und drehzahl höher 3000 u/min
+
 - Zweite Stufe Lachgas
 - temperatur in fahrenheit
 - Lambda Messung 
@@ -14,12 +14,9 @@ Anderungen zu 1.0
 - Datenleitung filter
 - drehzal pin auf input und auf high 
 - Streaming der live daten
-
-
-
-- Streaming schalter einbauen
+- Streaming schalter
 - Resettaste einbauen
-- Aufzeichungs start schalter einbauen
+- Aufzeichungs start schalter 
 
 
 
