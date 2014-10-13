@@ -9,6 +9,7 @@
  ** CS - pin 10
  	 
  */
+#include <AcceleroMMA7361.h> 
 #include <SdFat.h>
 #include <EasyTransfer.h>
 //#define DEBUG   //Debug einschalten verlangsammt 110ms
@@ -50,6 +51,13 @@ int SeriallNos;
 SEND_DATA_STRUCTURE mydata;
 //-----------------------------------------------------------------
 
+
+
+//Beschleunigungssensor
+AcceleroMMA7361 accelero;
+int x;
+int y;
+int z;
 
 
 SdFat sd;
@@ -168,6 +176,12 @@ ET.begin(details(mydata), &Serial1 );
    Serial.begin(9600);
    
    }
+// beschleunigung
+  accelero.begin(40, 41, 42, 43, A6, A7, A7);
+  accelero.setARefVoltage(5);                   //sets the AREF voltage to 3.3V
+  accelero.setSensitivity(LOW);                   //sets the sensitivity to +/-6G
+  accelero.calibrate();
+
 
   // wait for MAX chip to stabilize
   delay(500);
@@ -208,7 +222,7 @@ MAPCal =digitalSmooth(analogRead(MAPPIN), sensSmoothArray13);
 if ( stream == LOW ){
   String dataString = "##;##";
   Serial.println( dataString);
-   dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Lambda;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+   dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Lambda;AccelX;AccelZ;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
   Serial.println(dataString);
  }
  else
@@ -234,7 +248,7 @@ if ( stream == LOW ){
  
 
 // Überschrift schreiben
- dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Lambda;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+ dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Lambda;AccelX;AccelZ;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -382,6 +396,10 @@ if (start == 2) {
   dataString += String(Bordspannung_Volt); // Bordspannung
   dataString += ";";
   dataString += String(Lambda); // Lambda
+  dataString += ";";
+  dataString += String(accelero.getXAccel()); // X Beschleunigung
+  dataString += ";";
+  dataString += String(accelero.getZAccel()); //Z Beschleunigung
   dataString += ";";
     for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
  //   float  sensor = Zylinder_summe[thermoCS] * 1.8 + 32  ;
