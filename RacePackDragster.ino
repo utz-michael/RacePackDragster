@@ -13,6 +13,29 @@
 #include <EasyTransfer.h>
 //#define DEBUG   //Debug einschalten verlangsammt 110ms
 #define Temperatur
+// Rolling average
+#define filterSamples   10              // filterSamples should  be an odd number, no smaller than 3
+int sensSmoothArray1 [filterSamples];   // array for holding raw sensor values for sensor1 
+int sensSmoothArray2 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray3 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray4 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray5 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray6 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray7 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray8 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray9 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray10 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray11 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray12 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray13 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray14 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray15 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray16 [filterSamples];   // array for holding raw sensor values for sensor2 
+
+
+
+
+
 // serielle übertragung port 1
 //create object
 EasyTransfer ET;
@@ -224,21 +247,20 @@ for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
   
 #ifdef Temperatur
 
-//Glättung Temperatur
-//for (int g = 0; g<=9; g++){
+
    // basic readout test, just print the current temp
-   for (int thermoCS=0; thermoCS <= 7; thermoCS++){
-  Zylinder[thermoCS] = analogRead(thermoCS+8) ;
-//  Zylinder_summe[thermoCS] = Zylinder_summe[thermoCS] +  Zylinder[thermoCS];
   
-/*  #ifdef DEBUG  
-   Serial.print("Zylinder ");
-   Serial.print(thermoCS+1);
-   Serial.print("C = "); 
-   Serial.println(Zylinder[thermoCS]);
-  #endif 
-*/  
-  }
+  
+  Zylinder[0] = digitalSmooth(analogRead(8), sensSmoothArray1) ; 
+  Zylinder[1] = digitalSmooth(analogRead(9), sensSmoothArray2) ; 
+  Zylinder[2] = digitalSmooth(analogRead(10), sensSmoothArray3) ; 
+  Zylinder[3] = digitalSmooth(analogRead(11), sensSmoothArray4) ; 
+  Zylinder[4] = digitalSmooth(analogRead(12), sensSmoothArray5) ; 
+  Zylinder[5] = digitalSmooth(analogRead(13), sensSmoothArray6) ; 
+  Zylinder[6] = digitalSmooth(analogRead(14), sensSmoothArray7) ; 
+  Zylinder[7] = digitalSmooth(analogRead(15), sensSmoothArray8) ; 
+  
+  
 #endif  
 //}
 
@@ -252,11 +274,11 @@ for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
 
 // Drucksensoren auslesen und berechnen
 
-FuelMain = analogRead(FuelMainPIN);
-FuelCarburtor = analogRead(FuelCarburtorPIN);
-FuelNOS = analogRead(FuelNOSPIN);
-MAP = analogRead(MAPPIN);
-BordSpannung = analogRead(BordspannungPIN);
+FuelMain = digitalSmooth(analogRead(FuelMainPIN), sensSmoothArray10);
+FuelCarburtor =digitalSmooth( analogRead(FuelCarburtorPIN), sensSmoothArray11);
+FuelNOS = digitalSmooth(analogRead(FuelNOSPIN), sensSmoothArray12);
+MAP =digitalSmooth(analogRead(MAPPIN), sensSmoothArray13);
+BordSpannung =digitalSmooth( analogRead(BordspannungPIN), sensSmoothArray14);
 
 FuelMainPSI = (FuelMain - FuelMainCal)/7.14;
 FuelCarburtorPSI = (FuelCarburtor - FuelCarburtorCal)/7.14;
@@ -278,15 +300,15 @@ String Bordspannung_Volt = dtostrf(BordspannungVolt, 5, 2, buffer);
 
 //Lambda auslesen
 
-LambdaAnalog = analogRead (LambdaPIN);
+LambdaAnalog = digitalSmooth(analogRead (LambdaPIN), sensSmoothArray9);
 LambdaRaw = 0.12 * LambdaAnalog *0.0049 + 0.7;
 String Lambda = dtostrf(LambdaRaw, 4, 2, buffer);
 
 // Drehzahlen berechnen
 
-Motordrehzahl = 60000000/zeituebergabe/4;
+Motordrehzahl = digitalSmooth(60000000/zeituebergabe/4, sensSmoothArray15);
 
-Kardanwellenrehzahl = 36450000/zeituebergabe2;  // auf Annahme am Hinterrad mit 8 impulsen pro umdrehung
+Kardanwellenrehzahl = digitalSmooth(36450000/zeituebergabe2, sensSmoothArray16);  // auf Annahme am Hinterrad mit 8 impulsen pro umdrehung
 
 #ifdef DEBUG  
    Serial.print("Motor U/min ");
@@ -466,5 +488,58 @@ void Kardanwelle(){
       attachInterrupt(1, Kardanwelle, FALLING ); 
        // Interrupt wieder einschalten.
    }  
+int digitalSmooth(int rawIn, int *sensSmoothArray){     // "int *sensSmoothArray" passes an array to the function - the asterisk indicates the array name is a pointer
+  int j, k, temp, top, bottom;
+  long total;
+  static int i;
+ // static int raw[filterSamples];
+  static int sorted[filterSamples];
+  boolean done;
 
+  i = (i + 1) % filterSamples;    // increment counter and roll over if necc. -  % (modulo operator) rolls over variable
+  sensSmoothArray[i] = rawIn;                 // input new data into the oldest slot
 
+  // Serial.print("raw = ");
+
+  for (j=0; j<filterSamples; j++){     // transfer data array into anther array for sorting and averaging
+    sorted[j] = sensSmoothArray[j];
+  }
+
+  done = 0;                // flag to know when we're done sorting              
+  while(done != 1){        // simple swap sort, sorts numbers from lowest to highest
+    done = 1;
+    for (j = 0; j < (filterSamples - 1); j++){
+      if (sorted[j] > sorted[j + 1]){     // numbers are out of order - swap
+        temp = sorted[j + 1];
+        sorted [j+1] =  sorted[j] ;
+        sorted [j] = temp;
+        done = 0;
+      }
+    }
+  }
+
+/*
+  for (j = 0; j < (filterSamples); j++){    // print the array to debug
+    Serial.print(sorted[j]); 
+    Serial.print("   "); 
+  }
+  Serial.println();
+*/
+
+  // throw out top and bottom 15% of samples - limit to throw out at least one from top and bottom
+  bottom = max(((filterSamples * 15)  / 100), 1); 
+  top = min((((filterSamples * 85) / 100) + 1  ), (filterSamples - 1));   // the + 1 is to make up for asymmetry caused by integer rounding
+  k = 0;
+  total = 0;
+  for ( j = bottom; j< top; j++){
+    total += sorted[j];  // total remaining indices
+    k++; 
+    // Serial.print(sorted[j]); 
+    // Serial.print("   "); 
+  }
+
+//  Serial.println();
+//  Serial.print("average = ");
+//  Serial.println(total/k);
+  return total / k;    // divide by number of samples
+}
