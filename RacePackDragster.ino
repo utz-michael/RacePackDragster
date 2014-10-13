@@ -10,8 +10,24 @@
  	 
  */
 #include <SdFat.h>
+#include <EasyTransfer.h>
 //#define DEBUG   //Debug einschalten verlangsammt 110ms
 #define Temperatur
+// serielle übertragung port 1
+//create object
+EasyTransfer ET;
+struct SEND_DATA_STRUCTURE{
+//put your variable definitions here for the data you want to send
+//THIS MUST BE EXACTLY THE SAME ON THE OTHER ARDUINO
+int SeriallMain;
+int SeriallCarburtor;
+int SeriallNos;
+};
+//give a name to the group of data
+SEND_DATA_STRUCTURE mydata;
+//-----------------------------------------------------------------
+
+
 
 SdFat sd;
 SdFile myFile;
@@ -119,11 +135,15 @@ void setup()
  
  if (stream == LOW ){
  Serial.begin(9600);
+ Serial1.begin(57600);
+//start the library, pass in the data details and the name of the serial port. Can be Serial, Serial1, Serial2, etc.
+ET.begin(details(mydata), &Serial1 );
 
  sampl = 0;
  }
  else {
    Serial.begin(9600);
+   
    }
 
   // wait for MAX chip to stabilize
@@ -346,6 +366,15 @@ dataString += myChar; // cr linefeed anhängen
 if (stream == LOW ) {
   digitalWrite(35, HIGH);
   Serial.print(dataString);
+   //this is how you access the variables. [name of the group].[variable name]
+   mydata.SeriallMain = FuelMain - FuelMainCal;
+   mydata.SeriallCarburtor = FuelCarburtor - FuelCarburtorCal;
+   mydata.SeriallNos = FuelNOS - FuelNOSCal;
+//send the data
+ET.sendData();
+  
+  
+  
   digitalWrite(35, LOW);
 }
 else
