@@ -17,6 +17,7 @@ Anderungen zu 1.0
 - Streaming schalter
 - Resettaste einbauen
 - Aufzeichungs start schalter 
+- Wireles transmitt Fuel Pressure
 
 
 
