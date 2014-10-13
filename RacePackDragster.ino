@@ -385,8 +385,8 @@ if (start == 2) {
   dataString += ";";
     for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
  //   float  sensor = Zylinder_summe[thermoCS] * 1.8 + 32  ;
-     float  sensor = Zylinder[thermoCS] * 1.8 + 32  ;
-    String sensor_farenheit = dtostrf(sensor, 5, 0, buffer);
+     int sensor_farenheit = Zylinder[thermoCS] * 1.8 + 32  ;
+   // String sensor_farenheit = dtostrf(sensor, 5, 0, buffer);
     dataString += String(sensor_farenheit);
     if (thermoCS < 7) {
       dataString += ";"; 
