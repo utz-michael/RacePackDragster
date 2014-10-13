@@ -181,19 +181,30 @@ ET.begin(details(mydata), &Serial1 );
   // Kallibrierung Druck Sensoren
   
   for(int x =0 ; x < 1000 ; x++){
- 
+/* 
  FuelMainCal = FuelMainCal + analogRead(FuelMainPIN); 
  FuelCarburtorCal = FuelCarburtorCal + analogRead(FuelCarburtorPIN); 
  FuelNOSCal = FuelNOSCal + analogRead(FuelNOSPIN); 
  MAPCal = MAPCal + analogRead(MAPPIN); 
 }
 
-  
+/*  
  FuelMainCal = (int)((FuelMainCal /1000)+ .5);
  FuelCarburtorCal = (int)((FuelCarburtorCal /1000)+ .5); 
  FuelNOSCal = (int)((FuelNOSCal /1000)+ .5); 
  MAPCal = (int)((MAPCal /1000)+ .5);
 
+FuelMainCal = 0;
+ FuelCarburtorCal = 0;
+ FuelNOSCal = 0;
+ MAPCal = 0;
+ */
+FuelMainCal = digitalSmooth(analogRead(FuelMainPIN), sensSmoothArray10);
+FuelCarburtorCal =digitalSmooth( analogRead(FuelCarburtorPIN), sensSmoothArray11);
+FuelNOSCal = digitalSmooth(analogRead(FuelNOSPIN), sensSmoothArray12);
+MAPCal =digitalSmooth(analogRead(MAPPIN), sensSmoothArray13);
+
+}
 if ( stream == LOW ){
   String dataString = "##;##";
   Serial.println( dataString);
@@ -418,7 +429,7 @@ else
 
 //start der aufzeichnung und zurücksetzen der zeit auf null
 start = digitalRead (33);
-if ( start == LOW) {
+if ( start == LOW && StartAufzeichung == false) {
  ZeitOffset = millis(); 
  streckencounter = 0;
 
