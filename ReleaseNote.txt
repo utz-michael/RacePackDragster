@@ -18,7 +18,7 @@ Anderungen zu 1.0
 - Resettaste einbauen
 - Aufzeichungs start schalter 
 - Wireles transmitt Fuel Pressure
-
+- mit rolling filter
 
 
 Release 1.0
