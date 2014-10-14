@@ -15,7 +15,7 @@
 //#define DEBUG   //Debug einschalten verlangsammt 110ms
 #define Temperatur
 // Rolling average
-#define filterSamples   10              // filterSamples should  be an odd number, no smaller than 3
+#define filterSamples   9              // filterSamples should  be an odd number, no smaller than 3
 int sensSmoothArray1 [filterSamples];   // array for holding raw sensor values for sensor1 
 int sensSmoothArray2 [filterSamples];   // array for holding raw sensor values for sensor2 
 int sensSmoothArray3 [filterSamples];   // array for holding raw sensor values for sensor2 
@@ -32,7 +32,7 @@ int sensSmoothArray13 [filterSamples];   // array for holding raw sensor values 
 int sensSmoothArray14 [filterSamples];   // array for holding raw sensor values for sensor2 
 int sensSmoothArray15 [filterSamples];   // array for holding raw sensor values for sensor2 
 int sensSmoothArray16 [filterSamples];   // array for holding raw sensor values for sensor2 
-
+int sensSmoothArray17 [filterSamples];   // array for holding raw sensor values for sensor2 
 
 
 
@@ -397,7 +397,7 @@ if (start == 2) {
   dataString += ";";
   dataString += String(Lambda); // Lambda
   dataString += ";";
-  dataString += String(accelero.getXAccel()); // X Beschleunigung
+  dataString += String(digitalSmooth(accelero.getXAccel(), sensSmoothArray17)); // X Beschleunigung
   dataString += ";";
     for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
  //   float  sensor = Zylinder_summe[thermoCS] * 1.8 + 32  ;
