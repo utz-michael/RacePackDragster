@@ -63,7 +63,7 @@ int z;
 SdFat sd;
 SdFile myFile;
 byte stream = LOW;
-const int chipSelect = 10; // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
+const int chipSelect = SS; // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
 unsigned long ZeitOffset = 0;
 // Thermoelement 
 int Zylinder[8];
@@ -145,14 +145,19 @@ int LachgasPlate = 27;
 int start = HIGH;
 // aufzeichnug
 char myChar = 10; // LF für datenstrom
-int sampl = 5; // anzahl samles vor dem Speichern
+int sampl = 40; // anzahl samles vor dem Speichern
 boolean StartAufzeichung = false; //false ; // steuerung der Aufzeichnung
 
 
 void setup()
 {
- // SPI.setClockDivider(SPI_CLOCK_DIV4);
-  SPI.setClockDivider(SPI_CLOCK_DIV2); 
+  SPI_SETUP();
+  pinMode(chipSelect,OUTPUT);
+  digitalWrite(chipSelect, HIGH );
+  
+  
+  
+  
   pinMode(31, INPUT); //pin für streaming
    digitalWrite(31, HIGH);
    stream = digitalRead (31); 
@@ -571,4 +576,41 @@ int digitalSmooth(int rawIn, int *sensSmoothArray){     // "int *sensSmoothArray
 //  Serial.print("average = ");
 //  Serial.println(total/k);
   return total / k;    // divide by number of samples
+}
+
+void SPI_SETUP()
+{
+pinMode(SS, OUTPUT);
+
+// wake up the SPI bus
+SPI.begin();
+
+// This device reads MSB first:
+SPI.setBitOrder(MSBFIRST);
+
+/*
+SPI.setDataMode()
+Mode Clock Polarity (CPOL) Clock Phase (CPHA)
+SPI_MODE0 0 0
+SPI_MODE1 0 1
+SPI_MODE2 1 0
+SPI_MODE3 1 1
+*/
+SPI.setDataMode(SPI_MODE0);
+
+/*
+SPI.setClockDivider()
+sets SPI clock to a fraction of the system clock
+Arduino UNO system clock = 16 MHz
+Mode SPI Clock
+SPI_CLOCK_DIV2 8 MHz
+SPI_CLOCK_DIV4 4 MHz
+SPI_CLOCK_DIV8 2 MHz
+SPI_CLOCK_DIV16 1 MHz
+SPI_CLOCK_DIV32 500 Hz
+SPI_CLOCK_DIV64 250 Hz
+SPI_CLOCK_DIV128 125 Hz
+*/
+
+SPI.setClockDivider(SPI_CLOCK_DIV2); // SPI clock 1000Hz
 }
