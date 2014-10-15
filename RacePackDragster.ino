@@ -9,6 +9,7 @@
  ** CS - pin 10
  	 
  */
+#include <SPI.h>
 #include <AcceleroMMA7361.h> 
 #include <SdFat.h>
 #include <EasyTransfer.h>
@@ -33,7 +34,6 @@ int sensSmoothArray14 [filterSamples];   // array for holding raw sensor values 
 int sensSmoothArray15 [filterSamples];   // array for holding raw sensor values for sensor2 
 int sensSmoothArray16 [filterSamples];   // array for holding raw sensor values for sensor2 
 int sensSmoothArray17 [filterSamples];   // array for holding raw sensor values for sensor2 
-
 
 
 
@@ -151,7 +151,9 @@ boolean StartAufzeichung = false; //false ; // steuerung der Aufzeichnung
 
 void setup()
 {
-   pinMode(31, INPUT); //pin für streaming
+ // SPI.setClockDivider(SPI_CLOCK_DIV4);
+  SPI.setClockDivider(SPI_CLOCK_DIV2); 
+  pinMode(31, INPUT); //pin für streaming
    digitalWrite(31, HIGH);
    stream = digitalRead (31); 
  
