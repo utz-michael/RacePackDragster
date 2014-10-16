@@ -62,7 +62,7 @@ int z;
 
 SdFat sd;
 SdFile myFile;
-byte stream = LOW;
+int stream = LOW;
 const int chipSelect = SS; // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
 unsigned long ZeitOffset = 0;
 // Thermoelement 
@@ -126,7 +126,7 @@ int zeitcounter2 = 0;
 unsigned long zeitglatt2=0;
 unsigned long zeitglatt_neu2 = 0;
 unsigned long zeituebergabe2 = 36450;
-float Abrollumfang = 2.553; // Abrollumfang hinterreifen
+float Abrollumfang = 0.319; // 1/8 Abrollumfang hinterreifen 2.553 
 int streckencounter=0; // anzahl der impulse der strecke 
 int KardanwellePIN = 3;
 // MAP Sensor
@@ -312,11 +312,11 @@ FuelNOS = digitalSmooth(analogRead(FuelNOSPIN), sensSmoothArray12);
 MAP =digitalSmooth(analogRead(MAPPIN), sensSmoothArray13);
 BordSpannung =digitalSmooth( analogRead(BordspannungPIN), sensSmoothArray14);
 
-FuelMainPSI = (FuelMain - FuelMainCal)/7.14;
-FuelCarburtorPSI = (FuelCarburtor - FuelCarburtorCal)/7.14;
-FuelNOSPSI = (FuelNOS - FuelNOSCal)/7.14;
-MAPPSI = (MAP - MAPCal)/10.87;
-BordspannungVolt = BordSpannung * 3.0000 * 0.0049;
+FuelMainPSI = (FuelMain - FuelMainCal)* 0.140056;
+FuelCarburtorPSI = (FuelCarburtor - FuelCarburtorCal)* 0.140056;
+FuelNOSPSI = (FuelNOS - FuelNOSCal)* 0.140056;
+MAPPSI = (MAP - MAPCal)* 0.0919963;
+BordspannungVolt = BordSpannung  * 0.0147;
 
 
 char buffer[40];
@@ -333,12 +333,12 @@ String Bordspannung_Volt = dtostrf(BordspannungVolt, 5, 2, buffer);
 //Lambda auslesen
 
 LambdaAnalog = digitalSmooth(analogRead (LambdaPIN), sensSmoothArray9);
-LambdaRaw = 0.12 * LambdaAnalog *0.0049 + 0.7;
+LambdaRaw = LambdaAnalog *0.000588 + 0.7;
 String Lambda = dtostrf(LambdaRaw, 4, 2, buffer);
 
 // Drehzahlen berechnen
 
-Motordrehzahl = digitalSmooth(60000000/zeituebergabe/4, sensSmoothArray15);
+Motordrehzahl = digitalSmooth(15000000/zeituebergabe, sensSmoothArray15);
 
 Kardanwellenrehzahl = digitalSmooth(36450000/zeituebergabe2, sensSmoothArray16);  // auf Annahme am Hinterrad mit 8 impulsen pro umdrehung
 
@@ -382,9 +382,9 @@ if (start == 2) {
   dataString += ";";
   dataString += String(Kardanwellenrehzahl); // Kardanwellenrehzahl
   dataString += ";";
-  dataString += String(3600.0/(zeituebergabe2/1000.0)*Abrollumfang/8.0 ); // Geschwindigkeit
+  dataString += String(3600.0/(zeituebergabe2/1000.0)*Abrollumfang ); // Geschwindigkeit
   dataString += ";";
-  dataString += String(Abrollumfang/8*streckencounter); // Strecke
+  dataString += String(Abrollumfang*streckencounter); // Strecke
   dataString += ";";
   dataString += String(digitalRead(Transbrake)); // Transbrak
   dataString += ";";
