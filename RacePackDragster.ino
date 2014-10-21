@@ -72,6 +72,9 @@ int z;
 
 SdFat sd;
 SdFile myFile;
+char filename[] = "LOG00.csv";
+boolean Logging = true;
+
 int stream = LOW;
 const int chipSelect = SS; // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
 unsigned long ZeitOffset = 0;
@@ -255,10 +258,8 @@ if ( stream == LOW ){
   // Use half speed like the native library.
   // change to SPI_FULL_SPEED for more performance.
   if (!sd.begin(chipSelect, SPI_FULL_SPEED)) sd.initErrorHalt();
-  
-// datentyp für csv festlegen notwendig füe LiveGraph.2.0.software
-  String dataString = "##;##";
-//Aktuele zeit und Datum einlesen  
+ 
+  //Aktuele zeit und Datum einlesen  
  year1 = year();
  month1 = month();
  day1 = day();
@@ -270,9 +271,39 @@ if ( stream == LOW ){
   
   
   SdFile::dateTimeCallback(dateTime);
+  
+  
+   // File creation
+ 
+    for (uint8_t f = 0;  f < 100; f++) {
+      filename[3] = f/10 + '0';
+      filename[4] = f%10 + '0';
+      Serial.println(filename);
+      //Serial.println(f);
+      if (!sd.exists(filename)) {                // only open a new file if it doesn't exist        
+      myFile.open(filename, O_CREAT);  // Create a new file
+         
+       
+         Serial.println("exist"); 
+        myFile.close();
+       break;                                    // leave the loop!
+      }
+      
+      else {
+         Serial.println("not exist"); 
+         }
+   
+    }
+ 
+ 
+ 
+  
+// datentyp für csv festlegen notwendig füe LiveGraph.2.0.software
+  String dataString = "##;##";
+
   // open the file for write at end like the Native SD library
-  if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
-    sd.errorHalt("opening datalog.csv for write failed");
+  if (!myFile.open(filename, O_RDWR | O_CREAT | O_AT_END)) {
+    sd.errorHalt("opening LOGxx.csv for write failed");
   }
     myFile.println(dataString);
     
@@ -285,7 +316,7 @@ if ( stream == LOW ){
 // Überschrift schreiben
  dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Lambda;AccelX;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
   // open the file for write at end like the Native SD library
-  if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
+  if (!myFile.open(filename, O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
   }
    
@@ -469,7 +500,7 @@ else
 
  if (StartAufzeichung == true ){
    digitalWrite(35, HIGH);
-  if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
+  if (!myFile.open(filename, O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
   }
    myFile.print(dataString);
