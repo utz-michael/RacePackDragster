@@ -9,6 +9,9 @@
  ** CS - pin 10
  	 
  */
+#include <Time.h>  
+#include <Wire.h>  
+#include <DS1307RTC.h>  // a basic DS1307 library that returns time as a time_t 
 #include <SPI.h>
 #include <AcceleroMMA7361.h> 
 #include <SdFat.h>
@@ -34,8 +37,15 @@ int sensSmoothArray14 [filterSamples];   // array for holding raw sensor values 
 int sensSmoothArray15 [filterSamples];   // array for holding raw sensor values for sensor2 
 int sensSmoothArray16 [filterSamples];   // array for holding raw sensor values for sensor2 
 int sensSmoothArray17 [filterSamples];   // array for holding raw sensor values for sensor2 
+// Datum
+uint16_t year1 = 2009;
+uint8_t month1 = 10;
+uint8_t day1 = 1;
 
-
+// time 20:30:40
+uint8_t hour1 = 20;
+uint8_t minute1 = 30;
+uint8_t second1 = 40;
 
 // serielle übertragung port 1
 //create object
@@ -234,8 +244,13 @@ if ( stream == LOW ){
  }
  else
  {
+   setSyncProvider(RTC.get);   // the function to get the time from the RTC
+  if(timeStatus()!= timeSet) 
+     Serial.println("Unable to sync with the RTC");
+  else
+  Serial.println("RTC has set the system time");  
   Serial.print("Initializing SD card...");
- 
+
   // Initialize SdFat or print a detailed error message and halt
   // Use half speed like the native library.
   // change to SPI_FULL_SPEED for more performance.
@@ -243,11 +258,24 @@ if ( stream == LOW ){
   
 // datentyp für csv festlegen notwendig füe LiveGraph.2.0.software
   String dataString = "##;##";
+//Aktuele zeit und Datum einlesen  
+ year1 = year();
+ month1 = month();
+ day1 = day();
+
+// time 20:30:40
+ hour1 = hour();
+ minute1 = minute();
+ second1 = second();
+  
+  
+  SdFile::dateTimeCallback(dateTime);
   // open the file for write at end like the Native SD library
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
   }
     myFile.println(dataString);
+    
     myFile.close();
  
 
@@ -260,7 +288,10 @@ if ( stream == LOW ){
   if (!myFile.open("datalog.csv", O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
   }
-    myFile.println(dataString);
+   
+    // printTimestamps(myFile);
+    myFile.print(dataString);
+    digitalClockDisplay(); 
     myFile.close();
  }   
 
@@ -316,7 +347,7 @@ FuelMainPSI = (FuelMain - FuelMainCal)* 0.140056;
 FuelCarburtorPSI = (FuelCarburtor - FuelCarburtorCal)* 0.140056;
 FuelNOSPSI = (FuelNOS - FuelNOSCal)* 0.140056;
 MAPPSI = (MAP - MAPCal)* 0.0919963;
-BordspannungVolt = BordSpannung  * 0.0147;
+BordspannungVolt = BordSpannung  * 0.0196;
 
 
 char buffer[40];
@@ -614,3 +645,46 @@ SPI_CLOCK_DIV128 125 Hz
 
 SPI.setClockDivider(SPI_CLOCK_DIV2); // SPI clock 1000Hz
 }
+
+void digitalClockDisplay(){
+  // digital clock display of the time
+  myFile.print(hour());
+  printDigits(minute());
+  printDigits(second());
+  myFile.print(" ");
+  myFile.print(day());
+  myFile.print("/");
+  myFile.print(month());
+  myFile.print("/");
+  myFile.println(year()); 
+  //myFile.print(); 
+}
+
+void printDigits(int digits){
+  // utility function for digital clock display: prints preceding colon and leading 0
+  myFile.print(":");
+  if(digits < 10)
+    myFile.print('0');
+  myFile.print(digits);
+}
+//------------------------------------------------------------------------------
+/*
+ * User provided date time callback function.
+ * See SdFile::dateTimeCallback() for usage.
+ */
+void dateTime( uint16_t* date, uint16_t* time) {
+  // User gets date and time from GPS or real-time
+  // clock in real callback function
+
+  // return date using FAT_DATE macro to format fields
+  *date = FAT_DATE(year1, month1, day1);
+
+  // return time using FAT_TIME macro to format fields
+  *time = FAT_TIME(hour1, minute1, second1);
+}
+//------------------------------------------------------------------------------
+
+/*
+ * Function to print all timestamps.
+ */
+

@@ -19,6 +19,15 @@ Anderungen zu 1.0
 - Aufzeichungs start schalter 
 - Wireles transmitt Fuel Pressure
 - mit rolling filter
+- Bordspannung Aufzeichnung an 16V angepasst
+
+
+
+-Spannungsteiler für Bordspannungsmessung umbauen 12K und 36K
+-Spannungsteiler auf 16V umbauen
+-eingansspannung Arduino auf 16V umbauen
+
+
 
 
 Release 1.0
