@@ -20,14 +20,13 @@ Anderungen zu 1.0
 - Wireles transmitt Fuel Pressure
 - mit rolling filter
 - Bordspannung Aufzeichnung an 16V angepasst
--Spannungsteiler für Bordspannungsmessung umbauen 7.5K und 22.5K
+- Spannungsteiler für Bordspannungsmessung umbauen 7.5K und 22.5K
+- eingansspannung Arduino auf 16V umbauen LM 7808
+- Beschriftung anbringen
 
 
 
 
-
--eingansspannung Arduino auf 16V umbauen LM 7808
--Beschriftung anbringen
 -EGT einbauen und Testen
 -Neuer Radsensor einbauen
 -Alle externen Senoren mit geschirmten Kabel anschließen
