@@ -242,7 +242,7 @@ MAPCal =digitalSmooth(analogRead(MAPPIN), sensSmoothArray13);
 if ( stream == LOW ){
   String dataString = "##;##";
   Serial.println( dataString);
-   dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Lambda;AccelX;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+   dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;NOSSTage1;NOSSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;AFR;AccelX;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
   Serial.println(dataString);
  }
  else
@@ -314,7 +314,7 @@ if ( stream == LOW ){
  
 
 // Überschrift schreiben
- dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;LachgasFogger;LachgasPlate;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;Lambda;AccelX;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+ dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;AFR;AccelX;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open(filename, O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -395,8 +395,8 @@ String Bordspannung_Volt = dtostrf(BordspannungVolt, 5, 2, buffer);
 //Lambda auslesen
 
 LambdaAnalog = digitalSmooth(analogRead (LambdaPIN), sensSmoothArray9);
-LambdaRaw = LambdaAnalog *0.000588 + 0.7;
-String Lambda = dtostrf(LambdaRaw, 4, 2, buffer);
+LambdaRaw = LambdaAnalog *0.0098 + 10;
+String Lambda = dtostrf(LambdaRaw, 5, 2, buffer);
 
 // Drehzahlen berechnen
 
