@@ -53,17 +53,17 @@ EasyTransfer ET;
 struct SEND_DATA_STRUCTURE{
 //put your variable definitions here for the data you want to send
 //THIS MUST BE EXACTLY THE SAME ON THE OTHER ARDUINO
-String SeriallMain;
-String SeriallCarburtor;
-String SeriallNos;
+float SeriallMain;
+float SeriallCarburtor;
+float SeriallNos;
 
-   
+  
 int   SeriallRPM1;
 int   SeriallRPM2 ;
    
-String   SeriallMAP;
-String   SeriallBAT;
-String   SeriallLambda;
+float   SeriallMAP;
+float   SeriallBAT;
+float   SeriallLambda;
 
 int   SeriallEGT1;
 int   SeriallEGT2;
@@ -81,16 +81,7 @@ int   SeriallEGT8;
 SEND_DATA_STRUCTURE mydata;
 //-----------------------------------------------------------------
 
-String FuelMain_PSI;
-String FuelCarburtor_PSI;
 
-String FuelNOS_PSI;
-
-String MAP_PSI;
-
-String Bordspannung_Volt;
-
-String Lambda;
 
 
 //Beschleunigungssensor
@@ -515,16 +506,18 @@ if (stream == LOW ) {
   digitalWrite(35, HIGH);
   Serial.print(dataString);
    //this is how you access the variables. [name of the group].[variable name]
-   mydata.SeriallMain = FuelMain_PSI;
-   mydata.SeriallCarburtor = FuelCarburtor_PSI;
-   mydata.SeriallNos = FuelNOS_PSI;
+   mydata.SeriallMain = FuelMainPSI;
+   mydata.SeriallCarburtor = FuelCarburtorPSI;
+   mydata.SeriallNos = FuelNOSPSI;
+   
+  
    
    mydata.SeriallRPM1 = Motordrehzahl; 
    mydata.SeriallRPM2 = Kardanwellenrehzahl; // Kardanwellenrehzahl
    
-   mydata.SeriallMAP = MAP_PSI; // MAP in PSI
-   mydata.SeriallBAT = Bordspannung_Volt; // Bordspannung
-   mydata.SeriallLambda = Lambda; // Lambda
+   mydata.SeriallMAP = MAPPSI; // MAP in PSI
+   mydata.SeriallBAT = BordspannungVolt; // Bordspannung
+   mydata.SeriallLambda = LambdaRaw; // Lambda
    
    mydata.SeriallEGT1 = Zylinder[0] * 1.8 + 32  ;
    mydata.SeriallEGT2 = Zylinder[1] * 1.8 + 32  ;
@@ -537,7 +530,7 @@ if (stream == LOW ) {
    
    mydata.SeriallEGT7 = Zylinder[6] * 1.8 + 32  ;
    mydata.SeriallEGT8 = Zylinder[7] * 1.8 + 32  ;
-   
+  
    
 //send the data
 ET.sendData();
