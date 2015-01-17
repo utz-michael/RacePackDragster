@@ -235,25 +235,8 @@ ET.begin(details(mydata), &Serial1 );
     digitalWrite(MotorPIN,HIGH);
   // Kallibrierung Druck Sensoren
   
-  for(int x =0 ; x < 1000 ; x++){
-/* 
- FuelMainCal = FuelMainCal + analogRead(FuelMainPIN); 
- FuelCarburtorCal = FuelCarburtorCal + analogRead(FuelCarburtorPIN); 
- FuelNOSCal = FuelNOSCal + analogRead(FuelNOSPIN); 
- MAPCal = MAPCal + analogRead(MAPPIN); 
-}
+  for(int x =0 ; x < 100 ; x++){
 
-/*  
- FuelMainCal = (int)((FuelMainCal /1000)+ .5);
- FuelCarburtorCal = (int)((FuelCarburtorCal /1000)+ .5); 
- FuelNOSCal = (int)((FuelNOSCal /1000)+ .5); 
- MAPCal = (int)((MAPCal /1000)+ .5);
-
-FuelMainCal = 0;
- FuelCarburtorCal = 0;
- FuelNOSCal = 0;
- MAPCal = 0;
- */
 FuelMainCal = digitalSmooth(analogRead(FuelMainPIN), sensSmoothArray10);
 FuelCarburtorCal =digitalSmooth( analogRead(FuelCarburtorPIN), sensSmoothArray11);
 FuelNOSCal = digitalSmooth(analogRead(FuelNOSPIN), sensSmoothArray12);
@@ -263,7 +246,7 @@ MAPCal =digitalSmooth(analogRead(MAPPIN), sensSmoothArray13);
 if ( stream == LOW ){
   String dataString = "##;##";
   Serial.println( dataString);
-   dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;NOSSTage1;NOSSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;AFR;AccelX;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+   dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;NOSSTage1;NOSSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;AFR;AccelX;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
   Serial.println(dataString);
  }
  else
@@ -335,7 +318,7 @@ if ( stream == LOW ){
  
 
 // Überschrift schreiben
- dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;AFR;AccelX;Zylinder 1;Zylinder 2;Zylinder 3;Zylinder 4;Zylinder 5;Zylinder 6;Zylinder 7;Zylinder 8;";
+ dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;AFR;AccelX;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open(filename, O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -444,17 +427,7 @@ Kardanwellenrehzahl = digitalSmooth(36450000/zeituebergabe2, sensSmoothArray16);
   Serial.println(digitalRead(LachgasPlate));
 #endif
 
-/*
- // Zeit und Streckencounter auf null setzen wenn Transbrake gelöst wird
- 
-if (digitalRead(Transbrake)== 1) { start = 1;}
-if (digitalRead(Transbrake)== 0 && start == 1) { start = 2;}
-if (start == 2) { 
-    start = 0;   
-    ZeitOffset = millis(); 
-  streckencounter = 0;
-} 
-*/  
+
   // make a string for assembling the data to log:
   
   // read  sensors and append to the string:
