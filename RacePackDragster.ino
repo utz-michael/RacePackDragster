@@ -53,14 +53,44 @@ EasyTransfer ET;
 struct SEND_DATA_STRUCTURE{
 //put your variable definitions here for the data you want to send
 //THIS MUST BE EXACTLY THE SAME ON THE OTHER ARDUINO
-int SeriallMain;
-int SeriallCarburtor;
-int SeriallNos;
+String SeriallMain;
+String SeriallCarburtor;
+String SeriallNos;
+
+   
+int   SeriallRPM1;
+int   SeriallRPM2 ;
+   
+String   SeriallMAP;
+String   SeriallBAT;
+String   SeriallLambda;
+
+int   SeriallEGT1;
+int   SeriallEGT2;
+   
+int   SeriallEGT3;
+int   SeriallEGT4;
+   
+int   SeriallEGT5;
+int   SeriallEGT6; 
+   
+int   SeriallEGT7;
+int   SeriallEGT8;
 };
 //give a name to the group of data
 SEND_DATA_STRUCTURE mydata;
 //-----------------------------------------------------------------
 
+String FuelMain_PSI;
+String FuelCarburtor_PSI;
+
+String FuelNOS_PSI;
+
+String MAP_PSI;
+
+String Bordspannung_Volt;
+
+String Lambda;
 
 
 //Beschleunigungssensor
@@ -182,6 +212,11 @@ void setup()
   digitalWrite(35, LOW);
  // Open serial communications and wait for port to open:
  
+// beschleunigung
+  accelero.begin(40, 41, 42, 43, A6, A7, A7);
+  accelero.setARefVoltage(5);                   //sets the AREF voltage to 3.3V
+  accelero.setSensitivity(LOW);                   //sets the sensitivity to +/-6G
+  accelero.calibrate();
 
  
  if (stream == LOW ){
@@ -196,11 +231,6 @@ ET.begin(details(mydata), &Serial1 );
    Serial.begin(9600);
    
    }
-// beschleunigung
-  accelero.begin(40, 41, 42, 43, A6, A7, A7);
-  accelero.setARefVoltage(5);                   //sets the AREF voltage to 3.3V
-  accelero.setSensitivity(LOW);                   //sets the sensitivity to +/-6G
-  accelero.calibrate();
 
 
   // wait for MAX chip to stabilize
@@ -485,9 +515,30 @@ if (stream == LOW ) {
   digitalWrite(35, HIGH);
   Serial.print(dataString);
    //this is how you access the variables. [name of the group].[variable name]
-   mydata.SeriallMain = FuelMain - FuelMainCal;
-   mydata.SeriallCarburtor = FuelCarburtor - FuelCarburtorCal;
-   mydata.SeriallNos = FuelNOS - FuelNOSCal;
+   mydata.SeriallMain = FuelMain_PSI;
+   mydata.SeriallCarburtor = FuelCarburtor_PSI;
+   mydata.SeriallNos = FuelNOS_PSI;
+   
+   mydata.SeriallRPM1 = Motordrehzahl; 
+   mydata.SeriallRPM2 = Kardanwellenrehzahl; // Kardanwellenrehzahl
+   
+   mydata.SeriallMAP = MAP_PSI; // MAP in PSI
+   mydata.SeriallBAT = Bordspannung_Volt; // Bordspannung
+   mydata.SeriallLambda = Lambda; // Lambda
+   
+   mydata.SeriallEGT1 = Zylinder[0] * 1.8 + 32  ;
+   mydata.SeriallEGT2 = Zylinder[1] * 1.8 + 32  ;
+   
+   mydata.SeriallEGT3 = Zylinder[2] * 1.8 + 32  ;
+   mydata.SeriallEGT4 = Zylinder[3] * 1.8 + 32  ;
+   
+   mydata.SeriallEGT5 = Zylinder[4] * 1.8 + 32  ;
+   mydata.SeriallEGT6 = Zylinder[5] * 1.8 + 32  ;
+   
+   mydata.SeriallEGT7 = Zylinder[6] * 1.8 + 32  ;
+   mydata.SeriallEGT8 = Zylinder[7] * 1.8 + 32  ;
+   
+   
 //send the data
 ET.sendData();
   
