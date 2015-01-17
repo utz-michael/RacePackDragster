@@ -246,7 +246,7 @@ MAPCal =digitalSmooth(analogRead(MAPPIN), sensSmoothArray13);
 if ( stream == LOW ){
   String dataString = "##;##";
   Serial.println( dataString);
-   dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;NOSSTage1;NOSSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;AFR;AccelX;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
+   dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BatteryPower;AFR;AccelX;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
   Serial.println(dataString);
  }
  else
@@ -318,7 +318,7 @@ if ( stream == LOW ){
  
 
 // Überschrift schreiben
- dataString = "Zeit;Motordrehzahl;Kardanwelle;Geschwindigkeit;Strecke;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BordSpannung;AFR;AccelX;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
+ dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BatteryPower;AFR;AccelX;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open(filename, O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
