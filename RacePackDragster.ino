@@ -382,7 +382,7 @@ FuelMainPSI = (FuelMain - FuelMainCal)* 0.140056;
 FuelCarburtorPSI = (FuelCarburtor - FuelCarburtorCal)* 0.140056;
 FuelNOSPSI = (FuelNOS - FuelNOSCal)* 0.140056;
 MAPPSI = (MAP - MAPCal)* 0.0919963;
-BordspannungVolt = BordSpannung  * 0.0196;
+BordspannungVolt = (BordSpannung  * 0.0196)+ 0.339;
 
 
 char buffer[40];
