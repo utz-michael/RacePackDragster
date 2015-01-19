@@ -545,14 +545,20 @@ StartAufzeichung = true;
 void Motor(){ 
       detachInterrupt(0);                         // Interrupt ausschalten damit er uns nicht beißt
       unsigned long m = micros();                 // Microsekundenzähler auslesen
-      unsigned long v = m - last;                 // Differenz zum letzten Durchlauf berechnen
+      unsigned long v = m - last;        // Differenz zum letzten Durchlauf berechnen
+  /*    
+      
       if (v > 30000 )   { 
        zeit = v;                                // Wert in dauer übernehmen
       last = m; 
     } 
-      if (v > 1600 && v < zeit * 3  ) {                             // ignorieren wenn <= 1.6 ms (Kontaktpreller)
+    */
+     // if (v > 1600 && v < zeit * 3  ) {        // ignorieren wenn <= 1.6 ms (Kontaktpreller)
+      if (v > 1600 ) {        // ignorieren wenn <= 1.6 ms (Kontaktpreller)
       zeit = v;                                // Wert in dauer übernehmen
       last = m;         // und wieder den letzten Wert merken
+       zeituebergabe = zeit;    
+    /*
      zeitglatt_neu = zeitglatt + zeit;
      zeitglatt = zeitglatt_neu;
      
@@ -566,7 +572,7 @@ void Motor(){
        zeitglatt = 0;
        zeitglatt_neu = 0;
        }
-       
+       */
      //StartAufzeichung = true;  // beim ersten drehen des motors aufzeichung starten  
       }  
       
@@ -582,9 +588,12 @@ void Kardanwelle(){
       if (v2 > 1600    ) {            // ignorieren wenn <= 4 ms (Kontaktpreller)
       zeit2 = v2;                                // Wert in dauer übernehmen
       last2 = m2;         // und wieder den letzten Wert merken
+      streckencounter++;
+      zeituebergabe2 = zeit;
+   /*   
      zeitglatt_neu2 = zeitglatt2 + zeit2;
      zeitglatt2 = zeitglatt_neu2;
-     streckencounter++;
+     
     zeitcounter2 ++;
 //Serial.println(zeit2);
     // zeituebergabe2=zeit2;
@@ -595,7 +604,7 @@ void Kardanwelle(){
       zeitglatt2 = 0;
        zeitglatt_neu2 = 0;
        }
-        
+     */   
        } 
         
       attachInterrupt(1, Kardanwelle, FALLING ); 
