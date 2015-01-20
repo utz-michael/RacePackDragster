@@ -13,7 +13,7 @@
 #include <Wire.h>  
 #include <DS1307RTC.h>  // a basic DS1307 library that returns time as a time_t 
 #include <SPI.h>
-#include <AcceleroMMA7361.h> 
+//#include <AcceleroMMA7361.h> 
 #include <SdFat.h>
 #include <EasyTransfer.h>
 //#define DEBUG   //Debug einschalten verlangsammt 110ms
@@ -36,7 +36,7 @@ int sensSmoothArray13 [filterSamples];   // array for holding raw sensor values 
 int sensSmoothArray14 [filterSamples];   // array for holding raw sensor values for sensor2 
 int sensSmoothArray15 [filterSamples];   // array for holding raw sensor values for sensor2 
 int sensSmoothArray16 [filterSamples];   // array for holding raw sensor values for sensor2 
-int sensSmoothArray17 [filterSamples];   // array for holding raw sensor values for sensor2 
+//int sensSmoothArray17 [filterSamples];   // array for holding raw sensor values for sensor2 
 // Datum
 uint16_t year1 = 2009;
 uint8_t month1 = 10;
@@ -83,13 +83,13 @@ SEND_DATA_STRUCTURE mydata;
 
 
 
-
+/*
 //Beschleunigungssensor
 AcceleroMMA7361 accelero;
 int x;
 int y;
 int z;
-
+*/
 
 SdFat sd;
 SdFile myFile;
@@ -194,7 +194,7 @@ void setup()
   
   pinMode(31, INPUT); //pin für streaming
    digitalWrite(31, HIGH);
-   stream = digitalRead (31); 
+  stream = digitalRead (31); 
  
   pinMode(33, INPUT); //pin für start aufzeichnung
   digitalWrite(33, HIGH);
@@ -202,13 +202,13 @@ void setup()
    pinMode(35, OUTPUT); //pin für start aufzeichnung
   digitalWrite(35, LOW);
  // Open serial communications and wait for port to open:
- 
+/* 
 // beschleunigung
   accelero.begin(40, 41, 42, 43, A6, A7, A7);
   accelero.setARefVoltage(5);                   //sets the AREF voltage to 3.3V
   accelero.setSensitivity(LOW);                   //sets the sensitivity to +/-6G
   accelero.calibrate();
-
+*/
  
  if (stream == LOW ){
  Serial.begin(9600);
@@ -225,7 +225,7 @@ ET.begin(details(mydata), &Serial1 );
 
 
   // wait for MAX chip to stabilize
-  delay(500);
+  //delay(500);
   pinMode(LachgasPlate, INPUT);  // Digital pin als Eingang definieren
   pinMode(LachgasFogger, INPUT);  // Digital pin als Eingang definieren
   pinMode(Transbrake, INPUT); // Digital pin als Eingang definieren
@@ -235,7 +235,7 @@ ET.begin(details(mydata), &Serial1 );
     digitalWrite(MotorPIN,HIGH);
   // Kallibrierung Druck Sensoren
   
-  for(int x =0 ; x < 100 ; x++){
+  for(int x =0 ; x < 1000 ; x++){
 
 FuelMainCal = digitalSmooth(analogRead(FuelMainPIN), sensSmoothArray10);
 FuelCarburtorCal =digitalSmooth( analogRead(FuelCarburtorPIN), sensSmoothArray11);
@@ -246,7 +246,7 @@ MAPCal =digitalSmooth(analogRead(MAPPIN), sensSmoothArray13);
 if ( stream == LOW ){
   String dataString = "##;##";
   Serial.println( dataString);
-   dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BatteryPower;AFR;AccelX;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
+   dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BatteryPower;AFR;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
   Serial.println(dataString);
  }
  else
@@ -318,7 +318,7 @@ if ( stream == LOW ){
  
 
 // Überschrift schreiben
- dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BatteryPower;AFR;AccelX;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
+ dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BatteryPower;AFR;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open(filename, O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -459,8 +459,8 @@ Kardanwellenrehzahl = digitalSmooth(36450000/zeituebergabe2, sensSmoothArray16);
   dataString += String(Bordspannung_Volt); // Bordspannung
   dataString += ";";
   dataString += String(Lambda); // Lambda
-  dataString += ";";
-  dataString += String(digitalSmooth(accelero.getXAccel(), sensSmoothArray17)); // X Beschleunigung
+  //dataString += ";";
+ // dataString += String(digitalSmooth(accelero.getXAccel(), sensSmoothArray17)); // X Beschleunigung
   dataString += ";";
     for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
  //   float  sensor = Zylinder_summe[thermoCS] * 1.8 + 32  ;
