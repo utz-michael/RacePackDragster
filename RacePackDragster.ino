@@ -1,4 +1,6 @@
 /*
+  Zeit einstellen Unix zeit berechnen und in format T1421790978 seriell senden
+  
   SD card datalogger
 
  The circuit:
@@ -217,7 +219,19 @@ void setup()
 ET.begin(details(mydata), &Serial1 );
 
  sampl = 0;
- }
+ 
+ //Zeit Setzten
+ 
+ setSyncProvider(RTC.get);   // the function to get the time from the RTC
+  if(timeStatus()!= timeSet) 
+     Serial.println("Unable to sync with the RTC");
+  else
+     Serial.println("RTC has set the system time http://www.unixtime.de/ ");      
+}
+ 
+ 
+ 
+ 
  else {
    Serial.begin(9600);
    
@@ -367,7 +381,10 @@ for (int i=0; i <= sampl; i++){ // Daten block zum speichern erzeugen
 //   Zylinder_summe[thermoCS] = Zylinder_summe[thermoCS] / 10 ;
 //   }
 
+  
+   
 
+//////////////////////////////////////////////////
 
 
 // Drucksensoren auslesen und berechnen
@@ -478,6 +495,7 @@ dataString += myChar; // cr linefeed anhängen
 if (stream == LOW ) {
   digitalWrite(35, HIGH);
   Serial.print(dataString);
+ 
    //this is how you access the variables. [name of the group].[variable name]
    mydata.SeriallMain = FuelMainPSI;
    mydata.SeriallCarburtor = FuelCarburtorPSI;
@@ -507,7 +525,16 @@ if (stream == LOW ) {
    
 //send the data
 ET.sendData();
-  
+ if(Serial.available())
+  {
+     time_t t = processSyncMessage();
+     if(t >0)
+     {
+        RTC.set(t);   // set the RTC and the system time to the received value
+        setTime(t);          
+     }
+  }
+digitalClockDisplaySeriall(); 
   
   
   digitalWrite(35, LOW);
@@ -744,4 +771,48 @@ void dateTime( uint16_t* date, uint16_t* time) {
 /*
  * Function to print all timestamps.
  */
+void digitalClockDisplaySeriall(){
+  // digital clock display of the time
+  Serial.print(hour());
+  printDigitsSeriall(minute());
+  printDigitsSeriall(second());
+  Serial.print(" ");
+  Serial.print(day());
+  Serial.print(" ");
+  Serial.print(month());
+  Serial.print(" ");
+  Serial.print(year()); 
+  Serial.println(); 
+}
 
+void printDigitsSeriall(int digits){
+  // utility function for digital clock display: prints preceding colon and leading 0
+  Serial.print(":");
+  if(digits < 10)
+    Serial.print('0');
+  Serial.print(digits);
+}
+
+
+/*  code to process time sync messages from the serial port   */
+#define TIME_MSG_LEN  11   // time sync to PC is HEADER followed by unix time_t as ten ascii digits
+#define TIME_HEADER  'T'   // Header tag for serial time sync message
+
+time_t processSyncMessage() {
+  // return the time if a valid sync message is received on the serial port.
+  while(Serial.available() >=  TIME_MSG_LEN ){  // time message consists of a header and ten ascii digits
+    char c = Serial.read() ; 
+    Serial.print(c);  
+    if( c == TIME_HEADER ) {       
+      time_t pctime = 0;
+      for(int i=0; i < TIME_MSG_LEN -1; i++){   
+        c = Serial.read();          
+        if( c >= '0' && c <= '9'){   
+          pctime = (10 * pctime) + (c - '0') ; // convert digits to a number    
+        }
+      }   
+      return pctime; 
+    }  
+  }
+  return 0;
+}
