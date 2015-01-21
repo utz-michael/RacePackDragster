@@ -581,7 +581,7 @@ void Motor(){
     } 
     */
      // if (v > 1600 && v < zeit * 3  ) {        // ignorieren wenn <= 1.6 ms (Kontaktpreller)
-      if (v > 1600 ) {        // ignorieren wenn <= 1.6 ms (Kontaktpreller)
+      if (v > 1700 ) {        // ignorieren wenn <= 1.6 ms (Kontaktpreller)
       zeit = v;                                // Wert in dauer übernehmen
       last = m;         // und wieder den letzten Wert merken
        zeituebergabe = zeit;    
@@ -612,11 +612,11 @@ void Kardanwelle(){
       unsigned long m2 = micros();                 // Microsekundenzähler auslesen
       unsigned long v2 = m2 - last2;                 // Differenz zum letzten Durchlauf berechnen
   
-      if (v2 > 1600    ) {            // ignorieren wenn <= 4 ms (Kontaktpreller)
+      if (v2 > 4100    ) {            // ignorieren wenn <= 4 ms (Kontaktpreller)
       zeit2 = v2;                                // Wert in dauer übernehmen
       last2 = m2;         // und wieder den letzten Wert merken
       streckencounter++;
-      zeituebergabe2 = zeit;
+      zeituebergabe2 = zeit2;
    /*   
      zeitglatt_neu2 = zeitglatt2 + zeit2;
      zeitglatt2 = zeitglatt_neu2;
