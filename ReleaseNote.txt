@@ -6,14 +6,30 @@ Anderungen zu 1.0
 - Drucksensoren für Fuel eingebaut
 - MAP kalibriert
 - Sannungsmessung
-- Start der Aufzeichnung durch Transbrake und drehzahl höher 3000 u/min
+
 - Zweite Stufe Lachgas
 - temperatur in fahrenheit
 - Lambda Messung 
 - netzfilter
 - Datenleitung filter
+- drehzal pin auf input und auf high 
+- Streaming der live daten
+- Streaming schalter
+- Resettaste einbauen
+- Aufzeichungs start schalter 
+- Wireles transmitt Fuel Pressure
+- mit rolling filter
+- Bordspannung Aufzeichnung an 16V angepasst
+- Spannungsteiler für Bordspannungsmessung umbauen 7.5K und 22.5K
+- eingansspannung Arduino auf 16V umbauen LM 7808
+- Beschriftung anbringen
 
-- drehzal pin auf input und auf high stellen
+
+
+
+-EGT einbauen und Testen
+-Neuer Radsensor einbauen
+-Alle externen Senoren mit geschirmten Kabel anschließen
 
 
 
