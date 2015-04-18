@@ -38,7 +38,7 @@ int sensSmoothArray13 [filterSamples];   // array for holding raw sensor values 
 int sensSmoothArray14 [filterSamples];   // array for holding raw sensor values for sensor2 
 int sensSmoothArray15 [filterSamples];   // array for holding raw sensor values for sensor2 
 int sensSmoothArray16 [filterSamples];   // array for holding raw sensor values for sensor2 
-//int sensSmoothArray17 [filterSamples];   // array for holding raw sensor values for sensor2 
+int sensSmoothArray17 [filterSamples];   // array for holding raw sensor values for sensor2 
 // Datum
 uint16_t year1 = 2009;
 uint8_t month1 = 10;
@@ -165,12 +165,20 @@ unsigned long zeituebergabe2 = 36450;
 float Abrollumfang = 0.319; // 1/8 Abrollumfang hinterreifen 2.553 
 int streckencounter=0; // anzahl der impulse der strecke 
 int KardanwellePIN = 3;
+
 // MAP Sensor
 
 int MAPPIN = 3;
 float MAPCal = 0;
 int MAP = 0;
 float MAPPSI = 0;
+
+// NOSPressure Sensor
+
+int NOSPressurePIN = 6;
+float NOSPressureCal = 0;
+int NOSPressure = 0;
+float NOSPressurePSI = 0;
 
 
 // Digital pind für Transbrake und Lachgas
@@ -255,12 +263,12 @@ FuelMainCal = digitalSmooth(analogRead(FuelMainPIN), sensSmoothArray10);
 FuelCarburtorCal =digitalSmooth( analogRead(FuelCarburtorPIN), sensSmoothArray11);
 FuelNOSCal = digitalSmooth(analogRead(FuelNOSPIN), sensSmoothArray12);
 MAPCal =digitalSmooth(analogRead(MAPPIN), sensSmoothArray13);
-
+NOSPressureCal = digitalSmooth(analogRead(NOSPressurePIN), sensSmoothArray17);
 }
 if ( stream == LOW ){
   String dataString = "##;##";
   Serial.println( dataString);
-   dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BatteryPower;AFR;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
+   dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;NOSPressure;BatteryPower;AFR;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
   Serial.println(dataString);
  }
  else
@@ -332,7 +340,7 @@ if ( stream == LOW ){
  
 
 // Überschrift schreiben
- dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;BatteryPower;AFR;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
+ dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;NOSPressure;BatteryPower;AFR;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open(filename, O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -394,13 +402,14 @@ FuelCarburtor =digitalSmooth( analogRead(FuelCarburtorPIN), sensSmoothArray11);
 FuelNOS = digitalSmooth(analogRead(FuelNOSPIN), sensSmoothArray12);
 MAP =digitalSmooth(analogRead(MAPPIN), sensSmoothArray13);
 BordSpannung =digitalSmooth( analogRead(BordspannungPIN), sensSmoothArray14);
+NOSPressure =digitalSmooth( analogRead(NOSPressurePIN), sensSmoothArray17);
 
 FuelMainPSI = (FuelMain - FuelMainCal)* 0.140056;
 FuelCarburtorPSI = (FuelCarburtor - FuelCarburtorCal)* 0.140056;
 FuelNOSPSI = (FuelNOS - FuelNOSCal)* 0.140056;
 MAPPSI = (MAP - MAPCal)* 0.0919963;
 BordspannungVolt = (BordSpannung  * 0.0196)+ 0.839;
-
+NOSPressurePSI = (NOSPressure - NOSPressureCal)* 1.46484375;
 
 char buffer[40];
 String FuelMain_PSI = dtostrf(FuelMainPSI, 4, 1, buffer);
@@ -472,6 +481,8 @@ Kardanwellenrehzahl = digitalSmooth(36450000/zeituebergabe2, sensSmoothArray16);
   dataString += String(FuelCarburtor_PSI); // FuelCarburator
   dataString += ";";
   dataString += String(FuelNOS_PSI); // FuelNOS
+  dataString += ";";
+  dataString += String(NOSPressurePSI); // NOSPressure
   dataString += ";";
   dataString += String(Bordspannung_Volt); // Bordspannung
   dataString += ";";
