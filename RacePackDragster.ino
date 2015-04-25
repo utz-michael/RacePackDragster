@@ -268,7 +268,7 @@ NOSPressureCal = digitalSmooth(analogRead(NOSPressurePIN), sensSmoothArray17);
 if ( stream == LOW ){
   String dataString = "##;##";
   Serial.println( dataString);
-   dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;REVO;FuelMain;FuelCarburator;FuelNOS;NOSPressure;BatteryPower;AFR;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
+   dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;REVO;FuelMain;FuelCarburator;FuelNOS;NOSPressure;BatteryPower;AFR;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
   Serial.println(dataString);
  }
  else
@@ -340,7 +340,7 @@ if ( stream == LOW ){
  
 
 // Überschrift schreiben
- dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;REVO;FuelMain;FuelCarburator;FuelNOS;NOSPressure;BatteryPower;AFR;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
+ dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;REVO;FuelMain;FuelCarburator;FuelNOS;NOSPressure;BatteryPower;AFR;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open(filename, O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -469,10 +469,6 @@ Kardanwellenrehzahl = digitalSmooth(36450000/zeituebergabe2, sensSmoothArray16);
   dataString += String(Abrollumfang*streckencounter); // Strecke
   dataString += ";";
   dataString += String(digitalRead(Transbrake)); // Transbrak
-  dataString += ";";
-  dataString += String(digitalRead(LachgasFogger)); // LachgasFogger
-  dataString += ";";
-  dataString += String(digitalRead(LachgasPlate)); // LachgasPlate
   dataString += ";";
   dataString += String(MAP_PSI); // MAP in PSI
   dataString += ";";
