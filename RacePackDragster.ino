@@ -183,8 +183,8 @@ float NOSPressurePSI = 0;
 
 // Digital pind für Transbrake und Lachgas
 int Transbrake = 25;
-int LachgasFogger = 29;
-int LachgasPlate = 27;
+//int LachgasFogger = 29;
+//int LachgasPlate = 27;
 
 int start = HIGH;
 // aufzeichnug
@@ -245,11 +245,10 @@ ET.begin(details(mydata), &Serial1 );
    
    }
 
-
   // wait for MAX chip to stabilize
   //delay(500);
-  pinMode(LachgasPlate, INPUT);  // Digital pin als Eingang definieren
-  pinMode(LachgasFogger, INPUT);  // Digital pin als Eingang definieren
+//  pinMode(LachgasPlate, INPUT);  // Digital pin als Eingang definieren
+//  pinMode(LachgasFogger, INPUT);  // Digital pin als Eingang definieren
   pinMode(Transbrake, INPUT); // Digital pin als Eingang definieren
    pinMode(MotorPIN, INPUT); // Digital pin als Eingang definieren
     pinMode(KardanwellePIN, INPUT); // Digital pin als Eingang definieren
@@ -407,7 +406,7 @@ NOSPressure =digitalSmooth( analogRead(NOSPressurePIN), sensSmoothArray17);
 FuelMainPSI = (FuelMain - FuelMainCal)* 0.140056;
 FuelCarburtorPSI = (FuelCarburtor - FuelCarburtorCal)* 0.140056;
 FuelNOSPSI = (FuelNOS - FuelNOSCal)* 0.140056;
-MAPPSI = MAP * 0.0049;
+MAPPSI = MAP * 0.0049;// REVO Spannung 
 BordspannungVolt = (BordSpannung  * 0.0196)+ 0.839;
 NOSPressurePSI = (NOSPressure - NOSPressureCal)* 1.46484375;
 
@@ -445,12 +444,12 @@ Kardanwellenrehzahl = digitalSmooth(36450000/zeituebergabe2, sensSmoothArray16);
 
 
 #ifdef DEBUG  
-  Serial.print("fogger");
-  Serial.println(digitalRead(LachgasFogger));
+//  Serial.print("fogger");
+//  Serial.println(digitalRead(LachgasFogger));
   Serial.print("Transbrake");
   Serial.println(digitalRead(Transbrake));
-  Serial.print("Lachgas Platte");
-  Serial.println(digitalRead(LachgasPlate));
+//  Serial.print("Lachgas Platte");
+//  Serial.println(digitalRead(LachgasPlate));
 #endif
 
 
@@ -470,7 +469,7 @@ Kardanwellenrehzahl = digitalSmooth(36450000/zeituebergabe2, sensSmoothArray16);
   dataString += ";";
   dataString += String(digitalRead(Transbrake)); // Transbrak
   dataString += ";";
-  dataString += String(MAP_PSI); // MAP in PSI
+  dataString += String(MAP_PSI); // REVO in Volt
   dataString += ";";
   dataString += String(FuelMain_PSI); // FuelMain
   dataString += ";";
