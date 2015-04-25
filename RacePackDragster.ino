@@ -262,13 +262,13 @@ ET.begin(details(mydata), &Serial1 );
 FuelMainCal = digitalSmooth(analogRead(FuelMainPIN), sensSmoothArray10);
 FuelCarburtorCal =digitalSmooth( analogRead(FuelCarburtorPIN), sensSmoothArray11);
 FuelNOSCal = digitalSmooth(analogRead(FuelNOSPIN), sensSmoothArray12);
-MAPCal =digitalSmooth(analogRead(MAPPIN), sensSmoothArray13);
+//MAPCal =digitalSmooth(analogRead(MAPPIN), sensSmoothArray13);
 NOSPressureCal = digitalSmooth(analogRead(NOSPressurePIN), sensSmoothArray17);
 }
 if ( stream == LOW ){
   String dataString = "##;##";
   Serial.println( dataString);
-   dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;NOSPressure;BatteryPower;AFR;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
+   dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;REVO;FuelMain;FuelCarburator;FuelNOS;NOSPressure;BatteryPower;AFR;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
   Serial.println(dataString);
  }
  else
@@ -340,7 +340,7 @@ if ( stream == LOW ){
  
 
 // Überschrift schreiben
- dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;MAP;FuelMain;FuelCarburator;FuelNOS;NOSPressure;BatteryPower;AFR;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
+ dataString = "Time;EngineRPM;DriveshaftRPM;Speed;Distance;Transbrake;NOSStage1;NOSStage2;REVO;FuelMain;FuelCarburator;FuelNOS;NOSPressure;BatteryPower;AFR;EGT 1;EGT 2;EGT 3;EGT 4;EGT 5;EGT 6;EGT 7;EGT 8;";
   // open the file for write at end like the Native SD library
   if (!myFile.open(filename, O_RDWR | O_CREAT | O_AT_END)) {
     sd.errorHalt("opening datalog.csv for write failed");
@@ -407,7 +407,7 @@ NOSPressure =digitalSmooth( analogRead(NOSPressurePIN), sensSmoothArray17);
 FuelMainPSI = (FuelMain - FuelMainCal)* 0.140056;
 FuelCarburtorPSI = (FuelCarburtor - FuelCarburtorCal)* 0.140056;
 FuelNOSPSI = (FuelNOS - FuelNOSCal)* 0.140056;
-MAPPSI = (MAP - MAPCal)* 0.0919963;
+MAPPSI = MAP * 0.0049;
 BordspannungVolt = (BordSpannung  * 0.0196)+ 0.839;
 NOSPressurePSI = (NOSPressure - NOSPressureCal)* 1.46484375;
 
