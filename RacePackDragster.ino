@@ -191,7 +191,9 @@ int start = HIGH;
 char myChar = 10; // LF für datenstrom
 int sampl = 40; // anzahl samles vor dem Speichern
 boolean StartAufzeichung = false; //false ; // steuerung der Aufzeichnung
-
+boolean bla = false;
+boolean lauf = false;
+unsigned long Aufzeichnungsdauer = 0;
 
 void setup()
 {
@@ -571,6 +573,11 @@ if ( start == LOW && StartAufzeichung == false) {
 StartAufzeichung = true;
 }
 
+//aufzeichnung nach 10s automatisch beenden
+
+if (digitalRead(Transbrake) == HIGH && StartAufzeichung == true && bla == false ) {bla= true;}
+if (digitalRead(Transbrake) == LOW  && StartAufzeichung == true && bla == true ) {bla=false; lauf = true; Aufzeichnungsdauer = millis();}
+if (  millis()- Aufzeichnungsdauer >= 10000  && lauf == true ) { StartAufzeichung = false; lauf = false;}
 
 }
 
