@@ -258,14 +258,15 @@ ET.begin(details(mydata), &Serial1 );
     digitalWrite(MotorPIN,HIGH);
   // Kallibrierung Druck Sensoren
   
-  for(int x =0 ; x < 1000 ; x++){
+//  for(int x =0 ; x < 1000 ; x++){
 
-FuelMainCal = digitalSmooth(analogRead(FuelMainPIN), sensSmoothArray10);
-FuelCarburtorCal =digitalSmooth( analogRead(FuelCarburtorPIN), sensSmoothArray11);
-FuelNOSCal = digitalSmooth(analogRead(FuelNOSPIN), sensSmoothArray12);
+//FuelMainCal = digitalSmooth(analogRead(FuelMainPIN), sensSmoothArray10);
+//FuelCarburtorCal =digitalSmooth( analogRead(FuelCarburtorPIN), sensSmoothArray11);
+//FuelNOSCal = digitalSmooth(analogRead(FuelNOSPIN), sensSmoothArray12);
 //MAPCal =digitalSmooth(analogRead(MAPPIN), sensSmoothArray13);
-NOSPressureCal = digitalSmooth(analogRead(NOSPressurePIN), sensSmoothArray17);
-}
+//NOSPressureCal = digitalSmooth(analogRead(NOSPressurePIN), sensSmoothArray17);
+//}
+
 if ( stream == LOW ){
   String dataString = "##;##";
   Serial.println( dataString);
@@ -404,13 +405,23 @@ FuelNOS = digitalSmooth(analogRead(FuelNOSPIN), sensSmoothArray12);
 MAP =digitalSmooth(analogRead(MAPPIN), sensSmoothArray13);
 BordSpannung =digitalSmooth( analogRead(BordspannungPIN), sensSmoothArray14);
 NOSPressure =digitalSmooth( analogRead(NOSPressurePIN), sensSmoothArray17);
-
+/*
 FuelMainPSI = (FuelMain - FuelMainCal)* 0.140056;
 FuelCarburtorPSI = (FuelCarburtor - FuelCarburtorCal)* 0.140056;
 FuelNOSPSI = (FuelNOS - FuelNOSCal)* 0.140056;
+NOSPressurePSI = (NOSPressure - NOSPressureCal)* 1.46484375;
+*/
+FuelMainPSI = FuelMain * 0.140056;
+FuelCarburtorPSI = FuelCarburtor * 0.140056;
+FuelNOSPSI = FuelNOS * 0.140056;
+NOSPressurePSI = NOSPressure* 1.46484375;
+
+
+
+
 MAPPSI = MAP * 0.0049;// REVO Spannung 
 BordspannungVolt = (BordSpannung  * 0.0196)+ 0.839;
-NOSPressurePSI = (NOSPressure - NOSPressureCal)* 1.46484375;
+
 
 char buffer[40];
 String FuelMain_PSI = dtostrf(FuelMainPSI, 4, 1, buffer);
