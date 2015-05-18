@@ -437,14 +437,14 @@ String Bordspannung_Volt = dtostrf(BordspannungVolt, 5, 2, buffer);
 //Lambda auslesen
 
 LambdaAnalog = digitalSmooth(analogRead (LambdaPIN), sensSmoothArray9);
-LambdaRaw = LambdaAnalog *0.0098 + 10;
+LambdaRaw = LambdaAnalog *0.0098 + 10.00;
 String Lambda = dtostrf(LambdaRaw, 5, 2, buffer);
 
 // Drehzahlen berechnen
 
 Motordrehzahl = digitalSmooth(15000000/zeituebergabe, sensSmoothArray15);
 
-Kardanwellenrehzahl = digitalSmooth(36450000/zeituebergabe2, sensSmoothArray16);  // auf Annahme am Hinterrad mit 8 impulsen pro umdrehung
+Kardanwellenrehzahl = digitalSmooth(32175000/zeituebergabe2, sensSmoothArray16);  // auf Annahme am Hinterrad mit 8 impulsen pro umdrehung
 
 #ifdef DEBUG  
    Serial.print("Motor U/min ");
