@@ -411,9 +411,9 @@ FuelCarburtorPSI = (FuelCarburtor - FuelCarburtorCal)* 0.140056;
 FuelNOSPSI = (FuelNOS - FuelNOSCal)* 0.140056;
 NOSPressurePSI = (NOSPressure - NOSPressureCal)* 1.46484375;
 */
-FuelMainPSI = FuelMain * 0.140056-16.70;
-FuelCarburtorPSI = FuelCarburtor * 0.140056-16.70;
-FuelNOSPSI = FuelNOS * 0.140056-16.70;
+FuelMainPSI = FuelMain * 0.140056-14.70;
+FuelCarburtorPSI = FuelCarburtor * 0.140056-14.70;
+FuelNOSPSI = FuelNOS * 0.140056-14.70;
 NOSPressurePSI = NOSPressure* 1.46484375-14.50;
 
 
