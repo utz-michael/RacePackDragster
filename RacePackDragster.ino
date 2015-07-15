@@ -500,7 +500,7 @@ Kardanwellenrehzahl = digitalSmooth(32175000/zeituebergabe2, sensSmoothArray16);
   dataString += ";";
     for (int thermoCS = 0; thermoCS <= 7; thermoCS++) {
  //   float  sensor = Zylinder_summe[thermoCS] * 1.8 + 32  ;
-     int sensor_farenheit = Zylinder[thermoCS] * 1.8 + 32  ;
+     int sensor_farenheit = Zylinder[thermoCS] * 1.764 + 32.0  ; // 0.0049/0.005 = 0.98  >> 0.98* 1.8 = 1.764  
    // String sensor_farenheit = dtostrf(sensor, 5, 0, buffer);
     dataString += String(sensor_farenheit);
     if (thermoCS < 7) {
@@ -529,17 +529,17 @@ if (stream == LOW ) {
    mydata.SeriallBAT = BordspannungVolt; // Bordspannung
    mydata.SeriallLambda = LambdaRaw; // Lambda
    
-   mydata.SeriallEGT1 = Zylinder[0] * 1.8 + 32  ;
-   mydata.SeriallEGT2 = Zylinder[1] * 1.8 + 32  ;
+   mydata.SeriallEGT1 = Zylinder[0] * 1.764 + 32.0  ;
+   mydata.SeriallEGT2 = Zylinder[1] * 1.764 + 32.0  ;
    
-   mydata.SeriallEGT3 = Zylinder[2] * 1.8 + 32  ;
-   mydata.SeriallEGT4 = Zylinder[3] * 1.8 + 32  ;
+   mydata.SeriallEGT3 = Zylinder[2] * 1.764 + 32.0  ;
+   mydata.SeriallEGT4 = Zylinder[3] * 1.764 + 32.0  ;
    
-   mydata.SeriallEGT5 = Zylinder[4] * 1.8 + 32  ;
-   mydata.SeriallEGT6 = Zylinder[5] * 1.8 + 32  ;
+   mydata.SeriallEGT5 = Zylinder[4] * 1.764 + 32.0  ;
+   mydata.SeriallEGT6 = Zylinder[5] * 1.764 + 32.0  ;
    
-   mydata.SeriallEGT7 = Zylinder[6] * 1.8 + 32  ;
-   mydata.SeriallEGT8 = Zylinder[7] * 1.8 + 32  ;
+   mydata.SeriallEGT7 = Zylinder[6] * 1.764 + 32.0  ;
+   mydata.SeriallEGT8 = Zylinder[7] * 1.764 + 32.0  ;
   
    
 //send the data
