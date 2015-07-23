@@ -437,7 +437,7 @@ String Bordspannung_Volt = dtostrf(BordspannungVolt, 5, 2, buffer);
 //Lambda auslesen
 
 LambdaAnalog = digitalSmooth(analogRead (LambdaPIN), sensSmoothArray9);
-LambdaRaw = LambdaAnalog *0.0784 + 10.00;
+LambdaRaw = LambdaAnalog *0.00784 + 10.00;
 String Lambda = dtostrf(LambdaRaw, 5, 2, buffer);
 
 // Drehzahlen berechnen
