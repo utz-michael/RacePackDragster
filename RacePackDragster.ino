@@ -576,8 +576,10 @@ else
 #endif  
 
 //start der aufzeichnung und zurücksetzen der zeit auf null
-start = digitalRead (33);
-if ( start == LOW && StartAufzeichung == false) {
+//start = digitalRead (33);
+
+
+if ( NOSPressurePSI >= 600 && StartAufzeichung == false) {
  ZeitOffset = millis(); 
  streckencounter = 0;
 
