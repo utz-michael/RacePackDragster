@@ -11,7 +11,7 @@
  ** CS - pin 10
  	 
  */
-#include <Time.h>  
+#include <TimeLib.h>  
 #include <Wire.h>  
 #include <DS1307RTC.h>  // a basic DS1307 library that returns time as a time_t 
 #include <SPI.h>
@@ -208,8 +208,8 @@ void setup()
    digitalWrite(31, HIGH);
   stream = digitalRead (31); 
  
-  pinMode(33, INPUT); //pin für start aufzeichnung
-  digitalWrite(33, HIGH);
+  pinMode(33, INPUT_PULLUP); //pin für start aufzeichnung
+  //digitalWrite(33, HIGH);
    
    pinMode(35, OUTPUT); //pin für start aufzeichnung
   digitalWrite(35, LOW);
