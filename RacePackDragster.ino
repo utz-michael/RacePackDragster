@@ -414,10 +414,9 @@ NOSPressurePSI = (NOSPressure - NOSPressureCal)* 1.46484375;
 FuelMainPSI = (FuelMain - 102) * 0.122549;
 FuelCarburtorPSI =(FuelCarburtor - 102) * 0.122549;
 FuelNOSPSI = (FuelNOS - 102 ) * 0.122549;
-NOSPressurePSI = NOSPressure* 1.46484375;
+//NOSPressurePSI = NOSPressure* 1.46484375;
 
-
-
+NOSPressurePSI = NOSPressure * 1.5897;
 
 MAPPSI = MAP * 0.0049;// REVO Spannung 
 BordspannungVolt = (BordSpannung  * 0.0196)+ 0.839;
@@ -579,7 +578,7 @@ else
 //start = digitalRead (33);
 
 
-if ( NOSPressurePSI >= 600 && StartAufzeichung == false) {
+if ( NOSPressurePSI >= 110 && StartAufzeichung == false) {
  ZeitOffset = millis(); 
  streckencounter = 0;
 
