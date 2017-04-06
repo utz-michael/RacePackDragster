@@ -416,7 +416,8 @@ FuelCarburtorPSI =(FuelCarburtor - 102) * 0.122549;
 FuelNOSPSI = (FuelNOS - 102 ) * 0.122549;
 //NOSPressurePSI = NOSPressure* 1.46484375;
 
-NOSPressurePSI = NOSPressure * 1.5897;
+//NOSPressurePSI = NOSPressure * 1.5897; Alte Berechnung
+NOSPressurePSI = (NOSPressure-102) * 1.8382352; // Berechnung anhand von David Langfield 0.5V - 4.5V = 0 - 1500 PSI
 
 MAPPSI = MAP * 0.0049;// REVO Spannung 
 BordspannungVolt = (BordSpannung  * 0.0196)+ 0.839;
@@ -578,7 +579,7 @@ else
 //start = digitalRead (33);
 
 
-if ( NOSPressurePSI >= 110 && StartAufzeichung == false) {
+if ( NOSPressurePSI >= 500 && StartAufzeichung == false) {
  ZeitOffset = millis(); 
  streckencounter = 0;
 
