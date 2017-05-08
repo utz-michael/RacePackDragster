@@ -590,7 +590,7 @@ StartAufzeichung = true;
 
 if (digitalRead(Transbrake) == HIGH && StartAufzeichung == true && bla == false ) {bla= true;}
 if (digitalRead(Transbrake) == LOW  && StartAufzeichung == true && bla == true ) {bla=false; lauf = true; Aufzeichnungsdauer = millis();}
-if (  millis()- Aufzeichnungsdauer >= 10000  && lauf == true ) { StartAufzeichung = false; lauf = false;}
+if (  millis()- Aufzeichnungsdauer >= 10000  && lauf == true ) { StartAufzeichung = false; }
 
 }
 
