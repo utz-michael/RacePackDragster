@@ -579,7 +579,7 @@ else
 //start = digitalRead (33);
 
 
-if ( NOSPressurePSI >= 500 && StartAufzeichung == false) {
+if ( NOSPressurePSI >= 500 && digitalRead(Transbrake) == 1 && StartAufzeichung == false) {
  ZeitOffset = millis(); 
  streckencounter = 0;
 
