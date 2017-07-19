@@ -525,7 +525,8 @@ if (stream == LOW ) {
    mydata.SeriallRPM1 = Motordrehzahl; 
    mydata.SeriallRPM2 = Kardanwellenrehzahl; // Kardanwellenrehzahl
    
-   mydata.SeriallMAP = MAPPSI; // MAP in PSI
+   //mydata.SeriallMAP = MAPPSI; // MAP in PSI
+   mydata.SeriallMAP = NOSPressurePSI/10;
    mydata.SeriallBAT = BordspannungVolt; // Bordspannung
    mydata.SeriallLambda = LambdaRaw; // Lambda
    
