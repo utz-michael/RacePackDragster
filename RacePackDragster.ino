@@ -444,7 +444,7 @@ String Lambda = dtostrf(LambdaRaw, 5, 2, buffer);
 
 Motordrehzahl = digitalSmooth(15000000/zeituebergabe, sensSmoothArray15);
 
-Kardanwellenrehzahl = digitalSmooth(32175000/zeituebergabe2, sensSmoothArray16);  // auf Annahme am Hinterrad mit 8 impulsen pro umdrehung
+Kardanwellenrehzahl = digitalSmooth(30825000/zeituebergabe2, sensSmoothArray16);  // auf Annahme am Hinterrad mit 8 impulsen pro umdrehung
 
 #ifdef DEBUG  
    Serial.print("Motor U/min ");
