@@ -578,7 +578,12 @@ else
 
 //start der aufzeichnung und zurücksetzen der zeit auf null
 //start = digitalRead (33);
+if ( stream == LOW && StartAufzeichung == false){
+  ZeitOffset = millis(); 
+  streckencounter = 0;
+StartAufzeichung = true;
 
+}
 
 if ( NOSPressurePSI >= 500 && digitalRead(Transbrake) == 1 && StartAufzeichung == false) {
  ZeitOffset = millis(); 
